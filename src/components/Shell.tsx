@@ -24,61 +24,103 @@ export default function VariantShell({ variant, children }: { variant: 'a'|'b'|'
     else nav(`/${id}`);
   };
 
+  // Dark-variant color overrides (shell chrome adapts to each variant's palette)
+  const isDark = variant === 'b';
+  const headerBg = isDark ? 'rgba(10,12,18,.85)' : 'rgba(255,255,255,.9)';
+  const headerBorder = isDark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.06)';
+  const headerText = isDark ? '#e5e7eb' : undefined;
+  const accent =
+    variant === 'd' ? '#8b1e2e' :
+    variant === 'c' ? '#e11d48' :
+    variant === 'e' ? '#ff5a3c' :
+    variant === 'b' ? '#7dd3fc' :
+    '#1a1a1a';
+
   return (
-    <div className={`v-${variant} flex flex-col w-full min-h-screen lg:h-screen lg:w-screen lg:grid lg:grid-rows-[52px_1fr_auto]`}>
-      <header className="flex items-center gap-2 sm:gap-4 px-3 sm:px-5 py-2 lg:py-0 flex-wrap lg:flex-nowrap border-b border-black/5 bg-white/60 backdrop-blur-sm sticky top-0 z-30"
-        style={{ backgroundColor: variant === 'b' ? 'rgba(10,12,18,.7)' : undefined, color: variant === 'b' ? '#e5e7eb' : undefined, borderColor: variant === 'b' ? 'rgba(255,255,255,.08)' : undefined }}>
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="w-7 h-7 rounded-lg grid place-items-center text-sm font-black"
-            style={{ background: variant === 'd' ? '#8b1e2e' : variant === 'c' ? '#ff9eae' : variant === 'b' ? '#7dd3fc' : '#1a1a1a', color: '#fff' }}>S</div>
-          <div className="leading-tight">
-            <div className="text-sm font-bold">SDC Dashboard</div>
-            <div className="text-[10px] opacity-60 hidden sm:block">초등부 세미나 · v2 interactive</div>
+    <div className={`v-${variant} min-h-screen w-full flex flex-col lg:h-screen lg:w-screen lg:grid lg:grid-rows-[56px_1fr_auto]`}>
+      {/* Header: 2 rows on mobile (brand+picker / tabs), 1 row on lg+ */}
+      <header
+        className="sticky top-0 z-30 backdrop-blur-md border-b flex flex-col lg:flex-row"
+        style={{ backgroundColor: headerBg, borderColor: headerBorder, color: headerText }}>
+        {/* Row 1: brand + student picker + detail toggle */}
+        <div className="flex items-center gap-2 px-3 sm:px-5 h-12 lg:h-auto lg:py-0 lg:flex-1 lg:w-auto">
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="w-8 h-8 rounded-lg grid place-items-center text-sm font-black" style={{ background: accent, color: '#fff' }}>S</div>
+            <div className="leading-tight hidden sm:block">
+              <div className="text-sm font-bold">SDC Dashboard</div>
+              <div className="text-[10px] opacity-60">초등부 세미나</div>
+            </div>
+          </div>
+
+          {/* Tab bar — inline on lg+, on its own row below on mobile */}
+          <nav className="hidden lg:flex gap-1 ml-4">
+            {VARIANTS.map(v => (
+              <button key={v.id} onClick={() => switchVariant(v.id)}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition shrink-0
+                  ${v.id === variant
+                    ? (isDark ? 'bg-white text-slate-900' : 'text-white')
+                    : 'opacity-60 hover:opacity-100'}`}
+                style={v.id === variant && !isDark ? { background: accent } : undefined}>
+                <span className="opacity-70">{v.code}</span><span>{v.label}</span>
+              </button>
+            ))}
+            <div className="hidden xl:flex items-center ml-3 text-[11px] opacity-60">
+              {VARIANTS.find(v => v.id === variant)?.desc}
+            </div>
+          </nav>
+
+          <div className="ml-auto flex items-center gap-1.5 shrink-0">
+            <select
+              value={selectedId}
+              onChange={(e) => {
+                const id = Number(e.target.value);
+                setSelected(id);
+                if (isDetail) nav(`/${variant}/student/${id}`);
+              }}
+              aria-label="Select student"
+              className="h-9 text-sm rounded-lg border border-black/10 px-2.5 bg-white/90 text-slate-800 font-medium"
+              style={{ maxWidth: '11rem' }}>
+              {[...STUDENTS].sort((a,b)=>a.name.localeCompare(b.name,'ko')).map(s => (
+                <option key={s.id} value={s.id}>{s.name} · {s.grade}학년</option>
+              ))}
+            </select>
+            {isDetail ? (
+              <Link to={`/${variant}`} aria-label="대시보드로"
+                className="h-9 px-3 grid place-items-center text-xs font-semibold rounded-lg bg-black/5 hover:bg-black/10 whitespace-nowrap">
+                <span className="hidden sm:inline">← 대시보드</span><span className="sm:hidden">←</span>
+              </Link>
+            ) : (
+              <Link to={`/${variant}/student/${selectedId}`} aria-label="상세로"
+                className="h-9 px-3 grid place-items-center text-xs font-semibold rounded-lg text-white whitespace-nowrap"
+                style={{ background: accent }}>
+                <span className="hidden sm:inline">상세 →</span><span className="sm:hidden">→</span>
+              </Link>
+            )}
           </div>
         </div>
 
-        <nav className="flex gap-1 order-3 lg:order-none w-full lg:w-auto overflow-x-auto -mx-1 px-1 lg:mx-0 lg:px-0 lg:ml-2 scrollbar-thin">
+        {/* Mobile tab row (hidden on lg+) */}
+        <nav className="flex lg:hidden gap-1 px-3 pb-2 pt-0.5 overflow-x-auto scrollbar-thin" aria-label="Variants">
           {VARIANTS.map(v => (
-            <button key={v.id}
-              onClick={() => switchVariant(v.id)}
-              className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 shrink-0 transition
+            <button key={v.id} onClick={() => switchVariant(v.id)}
+              className={`px-3 h-8 rounded-full text-xs font-semibold flex items-center gap-1.5 transition shrink-0
                 ${v.id === variant
-                  ? (variant === 'b' ? 'bg-white text-slate-900' : variant === 'd' ? 'bg-burgundy-500 text-white' : variant === 'c' ? 'bg-[#2d1b3d] text-white' : 'bg-slate-900 text-white')
-                  : 'opacity-60 hover:opacity-100'}`}>
+                  ? (isDark ? 'bg-white text-slate-900' : 'text-white')
+                  : 'bg-black/5 hover:bg-black/10 opacity-70'}`}
+              style={v.id === variant && !isDark ? { background: accent } : undefined}>
               <span className="opacity-70">{v.code}</span><span>{v.label}</span>
             </button>
           ))}
         </nav>
-
-        <div className="ml-auto flex items-center gap-2 shrink-0">
-          <span className="text-[11px] opacity-60 hidden xl:inline">
-            {VARIANTS.find(v => v.id === variant)?.desc}
-          </span>
-          <select
-            value={selectedId}
-            onChange={(e) => {
-              const id = Number(e.target.value);
-              setSelected(id);
-              if (isDetail) nav(`/${variant}/student/${id}`);
-            }}
-            className="text-xs rounded-lg border border-black/10 px-2 py-1 bg-white/80 text-slate-800 max-w-[130px] sm:max-w-none">
-            {[...STUDENTS].sort((a,b)=>a.name.localeCompare(b.name,'ko')).map(s => (
-              <option key={s.id} value={s.id}>{s.name} · {s.grade}학년</option>
-            ))}
-          </select>
-          {isDetail ? (
-            <Link to={`/${variant}`} className="text-xs px-2 py-1 rounded-lg bg-black/5 hover:bg-black/10 whitespace-nowrap">← 대시보드</Link>
-          ) : (
-            <Link to={`/${variant}/student/${selectedId}`} className="text-xs px-2 py-1 rounded-lg bg-black/5 hover:bg-black/10 whitespace-nowrap">상세 →</Link>
-          )}
-        </div>
       </header>
 
-      <main className="min-h-0 lg:overflow-hidden">
+      {/* Main: natural flow on mobile (with bottom padding to clear fixed timeline), fixed viewport on lg+ */}
+      <main className="flex-1 min-w-0 pb-[72px] lg:pb-0 lg:min-h-0 lg:overflow-hidden">
         {children}
       </main>
 
-      <div className="sticky bottom-0 z-20 lg:static">
+      {/* Timeline: fixed at viewport bottom on mobile, normal flow on lg+ */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:static">
         <TimelineScrubber variant={variant} />
       </div>
     </div>

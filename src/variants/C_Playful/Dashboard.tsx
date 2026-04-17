@@ -42,7 +42,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <aside className="card p-3 flex flex-col lg:col-span-3 lg:min-h-0 lg:overflow-hidden">
+      <aside className="card p-3 hidden lg:flex lg:flex-col lg:col-span-3 lg:min-h-0 lg:overflow-hidden">
         <div className="fun text-xl font-bold mb-2">친구들 🎒</div>
         <div className="max-h-[280px] lg:max-h-none lg:flex-1 lg:min-h-0 overflow-auto space-y-1.5 pr-1">
           {roster.map((s, i) => (

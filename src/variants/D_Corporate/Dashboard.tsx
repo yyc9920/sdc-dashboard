@@ -59,7 +59,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <aside className="card flex flex-col lg:col-span-4 lg:min-h-0 lg:overflow-hidden">
+      <aside className="card hidden lg:flex lg:flex-col lg:col-span-4 lg:min-h-0 lg:overflow-hidden">
         <div className="th px-3 py-1.5 flex items-center justify-between">
           <span>STUDENT ROSTER · ㄱ–ㅎ</span>
           <span className="opacity-70">{roster.length} records</span>

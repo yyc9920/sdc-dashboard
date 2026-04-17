@@ -46,7 +46,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <aside className="card p-3 flex flex-col lg:col-span-3 lg:min-h-0 lg:overflow-hidden">
+      <aside className="card p-3 hidden lg:flex lg:flex-col lg:col-span-3 lg:min-h-0 lg:overflow-hidden">
         <div className="flex items-center justify-between mb-2">
           <div className="mono text-[10px] tracking-[0.2em] opacity-70">ROSTER</div>
           <div className="tag mono">{roster.length} REC</div>
@@ -159,7 +159,7 @@ function CohortStrip() {
   const cursor = useStore(s => s.cursor);
   const roster = [...STUDENTS].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
   return (
-    <div className="flex-1 min-h-0 flex items-end gap-1.5 pt-2">
+    <div className="h-[180px] lg:h-auto lg:flex-1 lg:min-h-0 flex items-end gap-1.5 pt-2">
       {roster.map(s => {
         const cle = cleAvg(cleAt(s, cursor));
         const att = attendanceAt(s, cursor);

@@ -43,8 +43,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Roster */}
-      <aside className="card p-3 flex flex-col lg:col-span-3 lg:min-h-0 lg:overflow-hidden">
+      {/* Roster — desktop only; mobile uses header student picker */}
+      <aside className="card p-3 hidden lg:flex lg:flex-col lg:col-span-3 lg:min-h-0 lg:overflow-hidden">
         <div className="flex items-center justify-between mb-2">
           <div className="text-[11px] font-semibold uppercase tracking-wider">명단 · ㄱ–ㅎ</div>
           <div className="muted text-[10px]">{roster.length}명</div>

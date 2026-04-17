@@ -24,5 +24,7 @@ yarn-error.log*
 .playwright-mcp/
 .next-cache/
 v2-*.png
+v3-*.png
+audit-*.png
 variant-*.png
 dashboard_sample.PNG
