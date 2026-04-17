@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>SDC Dashboard · 초등부 세미나 학생 관리 데모</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.13.5/dist/cdn.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=Noto+Serif+KR:wght@400;600;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=JetBrains+Mono:wght@400;600&family=Gaegu:wght@400;700&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    html, body { font-family: 'Noto Sans KR', 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+
+    /* ---------- Variant A · Minimal (Notion/Linear) ---------- */
+    .v1 { background: #fafaf8; color: #1a1a1a; }
+    .v1 .card { background: #fff; border: 1px solid #ececea; border-radius: 14px; }
+    .v1 .display { font-family: 'Playfair Display', serif; letter-spacing: -0.02em; }
+    .v1 .muted { color: #7b7b76; }
+    .v1 .chip { background: #f2efe8; color: #6b6658; border-radius: 999px; padding: 2px 10px; font-size: 11px; font-weight:500; }
+    .v1 .accent { color: #c6604a; }
+
+    /* ---------- Variant B · Dark Modern (Vercel/Stripe) ---------- */
+    .v2 { background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(56,189,248,.14), transparent 60%),
+        radial-gradient(1000px 500px at 110% 10%, rgba(168,85,247,.16), transparent 60%),
+        #07090d;
+      color: #e5e7eb;
+    }
+    .v2 .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+    }
+    .v2 .glow { box-shadow: 0 0 0 1px rgba(56,189,248,.35), 0 10px 40px -10px rgba(56,189,248,.35); }
+    .v2 .mono { font-family: 'JetBrains Mono', monospace; }
+    .v2 .grad-text {
+      background: linear-gradient(90deg,#7dd3fc,#a78bfa,#f472b6);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .v2 .tag { background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:#cbd5e1; border-radius:8px; padding:2px 8px; font-size:11px; }
+
+    /* ---------- Variant C · Playful (Kids) ---------- */
+    .v3 { background: linear-gradient(160deg, #fff7e6 0%, #ffeef0 40%, #eaf7ff 100%); color:#2d1b3d; }
+    .v3 .card { background:#fff; border-radius: 28px; border:3px solid #2d1b3d; box-shadow: 6px 6px 0 #2d1b3d; }
+    .v3 .btn-pop { border:3px solid #2d1b3d; border-radius:999px; box-shadow: 3px 3px 0 #2d1b3d; transition: transform .12s; }
+    .v3 .btn-pop:active { transform: translate(3px,3px); box-shadow:none; }
+    .v3 .fun { font-family: 'Gaegu', 'Noto Sans KR', cursive; }
+    .v3 .pill { border-radius:999px; padding: 4px 12px; font-weight:700; font-size:12px; border:2px solid #2d1b3d; }
+    .v3 .badge { width: 56px; height:56px; border-radius:50%; display:grid; place-items:center; border:3px solid #2d1b3d; box-shadow: 3px 3px 0 #2d1b3d; font-size:26px; }
+
+    /* ---------- Variant D · Corporate Pro ---------- */
+    .v4 { background: #f3f4f6; color: #0f172a; font-family: 'Inter','Noto Sans KR',sans-serif; }
+    .v4 .card { background:#fff; border-top: 3px solid #0a2540; border-radius: 4px; box-shadow: 0 1px 2px rgba(15,23,42,.05); }
+    .v4 .kpi { background:#0a2540; color:#fff; border-radius:4px; }
+    .v4 .kpi.gold { background: linear-gradient(135deg,#b8860b,#ffd76a); color:#1a1400; }
+    .v4 .th { background:#0a2540; color:#fff; font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+    .v4 .row:hover { background:#f8fafc; }
+    .v4 .tabular { font-variant-numeric: tabular-nums; }
+
+    /* ---------- Variant E · Bento Magazine ---------- */
+    .v5 { background:#efeae2; color:#141414; }
+    .v5 .bento { background:#fff; border-radius: 22px; padding: 22px; position:relative; overflow:hidden; }
+    .v5 .bento.dark { background:#141414; color:#f5f1ea; }
+    .v5 .bento.accent { background:#ff5a3c; color:#fff; }
+    .v5 .bento.cream { background:#fff8ec; }
+    .v5 .display { font-family:'Playfair Display', 'Noto Serif KR', serif; letter-spacing:-0.02em; }
+    .v5 .micro { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
+    .v5 .divider { height:1px; background: currentColor; opacity:.2; }
+
+    /* helpers */
+    .canvas-wrap { position: relative; width:100%; }
+    [x-cloak] { display: none !important; }
+  </style>
+</head>
+<body x-data="dashboard()" x-init="init()" x-cloak class="bg-slate-50">
+
+<!-- ============== TOP NAV (picker) ============== -->
+<header class="sticky top-0 z-50 backdrop-blur bg-white/90 border-b border-slate-200">
+  <div class="max-w-[1400px] mx-auto px-5 py-3 flex items-center gap-4 flex-wrap">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-slate-900 text-white grid place-items-center font-black">S</div>
+      <div class="leading-tight">
+        <div class="text-sm font-bold">SDC Dashboard</div>
+        <div class="text-[11px] text-slate-500">초등부 세미나 · 학생 관리 데모</div>
+      </div>
+    </div>
+
+    <nav class="flex gap-1 ml-2 flex-wrap">
+      <template x-for="v in variants" :key="v.id">
+        <button @click="setTab(v.id)"
+          :class="currentTab===v.id ? 'bg-slate-900 text-white shadow' : 'text-slate-600 hover:bg-slate-100'"
+          class="px-3 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+          <span class="opacity-60" x-text="v.code"></span>
+          <span x-text="v.label"></span>
+        </button>
+      </template>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-3">
+      <div class="text-[11px] text-slate-500 hidden md:block" x-text="currentVariant.desc"></div>
+      <select x-model="selectedId" @change="rerender()"
+        class="text-xs border border-slate-300 rounded-lg px-2 py-1.5 bg-white max-w-[180px]">
+        <template x-for="s in sortedStudents" :key="s.id">
+          <option :value="s.id" x-text="`${s.name} · ${s.grade}학년`"></option>
+        </template>
+      </select>
+    </div>
+  </div>
+</header>
+
+<!-- ============== VARIANT A · MINIMAL (Notion/Linear) ============== -->
+<section x-show="currentTab===1" class="v1 min-h-screen">
+  <div class="max-w-[1400px] mx-auto px-6 py-10">
+    <!-- headline -->
+    <div class="flex items-end justify-between flex-wrap gap-4 mb-10">
+      <div>
+        <div class="chip mb-3">Variant A · Minimal</div>
+        <h1 class="display text-5xl font-bold leading-tight">학습만 남기고,<br><span class="accent italic">데이터로 가르친다.</span></h1>
+        <p class="muted mt-3 max-w-lg">입학 시점부터 축적된 학생별 CLE 6개 지표와 교과 추이를 한 화면에서 읽습니다.</p>
+      </div>
+      <div class="flex gap-6 text-right">
+        <div><div class="muted text-xs uppercase tracking-wider">총 학생</div><div class="display text-3xl" x-text="students.length"></div></div>
+        <div><div class="muted text-xs uppercase tracking-wider">평균 CLE</div><div class="display text-3xl" x-text="avgCLE"></div></div>
+        <div><div class="muted text-xs uppercase tracking-wider">TOEFL 평균</div><div class="display text-3xl" x-text="avgTOEFL"></div></div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-5">
+      <!-- roster -->
+      <aside class="col-span-12 lg:col-span-3">
+        <div class="card p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-xs font-semibold uppercase tracking-wider">명단 · ㄱ–ㅎ</div>
+            <div class="muted text-[11px]" x-text="`${sortedStudents.length}명`"></div>
+          </div>
+          <div class="space-y-1 max-h-[560px] overflow-auto pr-1">
+            <template x-for="s in sortedStudents" :key="s.id">
+              <button @click="selectedId = s.id; rerender()"
+                :class="selectedId===s.id ? 'bg-[#f2efe8] border-[#d8d1c0]' : 'border-transparent hover:bg-[#fafaf6]'"
+                class="w-full text-left px-3 py-2.5 rounded-xl border flex items-center justify-between">
+                <div>
+                  <div class="font-semibold" x-text="s.name"></div>
+                  <div class="muted text-[11px]" x-text="`${s.grade}학년 · ${s.enrollDate.slice(0,7)} 입학`"></div>
+                </div>
+                <div class="display text-sm" x-text="avgOfCLE(s)"></div>
+              </button>
+            </template>
+          </div>
+        </div>
+      </aside>
+
+      <!-- detail -->
+      <main class="col-span-12 lg:col-span-9 space-y-5">
+        <div class="card p-6">
+          <div class="flex items-start justify-between flex-wrap gap-3">
+            <div>
+              <div class="chip mb-2">학생 프로파일</div>
+              <h2 class="display text-4xl font-bold" x-text="selected.name"></h2>
+              <div class="muted mt-1" x-text="`${selected.grade}학년 · ${selected.enrollDate} 입학 · 수강 ${monthsSince(selected.enrollDate)}개월차`"></div>
+            </div>
+            <div class="flex gap-6">
+              <div><div class="muted text-xs uppercase tracking-wider">CLE 평균</div><div class="display text-3xl" x-text="avgOfCLE(selected)"></div></div>
+              <div><div class="muted text-xs uppercase tracking-wider">교과 평균</div><div class="display text-3xl" x-text="avgSubject(selected)"></div></div>
+              <div><div class="muted text-xs uppercase tracking-wider">TOEFL</div><div class="display text-3xl" x-text="selected.toefl.total"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-12 gap-5">
+          <div class="card p-6 col-span-12 md:col-span-5">
+            <div class="text-xs font-semibold uppercase tracking-wider mb-1">CLE · 어학 6개 지표</div>
+            <div class="muted text-xs mb-3">독해 / 작문 / 청해 / 회화 / 문법 / 어휘</div>
+            <div class="canvas-wrap" style="height:320px"><canvas id="v1-radar"></canvas></div>
+          </div>
+          <div class="card p-6 col-span-12 md:col-span-7">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <div class="text-xs font-semibold uppercase tracking-wider">교과 성적 추이</div>
+                <div class="muted text-xs">월례 · 중간 · 기말</div>
+              </div>
+              <div class="flex gap-3 text-[11px] muted">
+                <span><span class="inline-block w-2 h-2 rounded-full bg-slate-400 mr-1"></span>월례</span>
+                <span><span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1"></span>중간</span>
+                <span><span class="inline-block w-2 h-2 rounded-full bg-rose-500 mr-1"></span>기말</span>
+              </div>
+            </div>
+            <div class="canvas-wrap" style="height:320px"><canvas id="v1-line"></canvas></div>
+          </div>
+
+          <div class="card p-6 col-span-12 md:col-span-5">
+            <div class="text-xs font-semibold uppercase tracking-wider mb-3">TOEFL</div>
+            <div class="display text-5xl mb-4" x-text="selected.toefl.total"><span class="muted text-lg">/120</span></div>
+            <div class="grid grid-cols-2 gap-3">
+              <template x-for="k in ['reading','listening','speaking','writing']" :key="k">
+                <div class="p-3 rounded-xl bg-[#faf8f2]">
+                  <div class="muted text-[11px] uppercase" x-text="k"></div>
+                  <div class="display text-2xl" x-text="selected.toefl[k]"><span class="muted text-sm">/30</span></div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="card p-6 col-span-12 md:col-span-7">
+            <div class="text-xs font-semibold uppercase tracking-wider mb-3">수상 · 활동 이력</div>
+            <ul class="divide-y divide-[#ececea]">
+              <template x-for="a in selected.awards" :key="a.title+a.date">
+                <li class="py-2.5 flex items-center justify-between">
+                  <div>
+                    <div class="font-medium" x-text="a.title"></div>
+                    <div class="muted text-xs" x-text="a.org"></div>
+                  </div>
+                  <div class="muted text-xs" x-text="a.date"></div>
+                </li>
+              </template>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- ============== VARIANT B · DARK MODERN ============== -->
+<section x-show="currentTab===2" class="v2 min-h-screen">
+  <div class="max-w-[1400px] mx-auto px-6 py-10">
+    <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
+      <div>
+        <div class="mono text-[11px] tracking-[0.2em] text-sky-300/70 mb-2">VARIANT B · DARK_MODE</div>
+        <h1 class="text-5xl font-black leading-tight">
+          <span class="grad-text">DATA-DRIVEN</span><br>
+          <span>LEARNING OPS</span>
+        </h1>
+        <p class="mt-3 text-slate-400 max-w-lg text-sm">실시간처럼 읽히는 학습 지표. 입학 후 모든 점수가 한 곳에 흐릅니다.</p>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="card glow px-5 py-3">
+          <div class="mono text-[10px] text-sky-300/80">STUDENTS</div>
+          <div class="text-3xl font-bold mono" x-text="students.length"></div>
+        </div>
+        <div class="card px-5 py-3">
+          <div class="mono text-[10px] text-purple-300/80">AVG CLE</div>
+          <div class="text-3xl font-bold mono" x-text="avgCLE"></div>
+        </div>
+        <div class="card px-5 py-3">
+          <div class="mono text-[10px] text-pink-300/80">AVG TOEFL</div>
+          <div class="text-3xl font-bold mono" x-text="avgTOEFL"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-4">
+      <aside class="col-span-12 lg:col-span-3">
+        <div class="card p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="mono text-[10px] tracking-[0.2em] text-slate-400">ROSTER · A→Z</div>
+            <div class="tag mono" x-text="sortedStudents.length + ' REC'"></div>
+          </div>
+          <div class="space-y-1.5 max-h-[560px] overflow-auto pr-1">
+            <template x-for="s in sortedStudents" :key="s.id">
+              <button @click="selectedId = s.id; rerender()"
+                :class="selectedId===s.id ? 'bg-white/10 border-sky-400/50 glow' : 'border-white/5 hover:bg-white/5'"
+                class="w-full text-left px-3 py-2.5 rounded-xl border flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full" :style="selectedId===s.id ? 'background:#38bdf8; box-shadow:0 0 8px #38bdf8':'background:#475569'"></div>
+                <div class="flex-1">
+                  <div class="text-sm font-semibold" x-text="s.name"></div>
+                  <div class="text-[11px] text-slate-400" x-text="`G${s.grade} · ${s.enrollDate.slice(2,7)}`"></div>
+                </div>
+                <div class="mono text-xs text-sky-300" x-text="avgOfCLE(s)"></div>
+              </button>
+            </template>
+          </div>
+        </div>
+      </aside>
+
+      <main class="col-span-12 lg:col-span-9 space-y-4">
+        <div class="card p-6 flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <div class="mono text-[10px] text-sky-300/80 tracking-[0.2em]">SUBJECT · PROFILE</div>
+            <h2 class="text-4xl font-black mt-1" x-text="selected.name"></h2>
+            <div class="text-sm text-slate-400 mt-1" x-text="`Grade ${selected.grade} · Enrolled ${selected.enrollDate} · ${monthsSince(selected.enrollDate)}mo`"></div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-right">
+            <div><div class="mono text-[10px] text-sky-300/80">CLE</div><div class="text-2xl font-bold mono" x-text="avgOfCLE(selected)"></div></div>
+            <div><div class="mono text-[10px] text-purple-300/80">SUBJECT</div><div class="text-2xl font-bold mono" x-text="avgSubject(selected)"></div></div>
+            <div><div class="mono text-[10px] text-pink-300/80">TOEFL</div><div class="text-2xl font-bold mono" x-text="selected.toefl.total"></div></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-12 gap-4">
+          <div class="card p-6 col-span-12 md:col-span-5">
+            <div class="mono text-[10px] tracking-[0.2em] text-slate-400 mb-1">CLE_HEXAGON</div>
+            <div class="text-slate-300 text-sm mb-3">어학 6개 지표 분포</div>
+            <div class="canvas-wrap" style="height:320px"><canvas id="v2-radar"></canvas></div>
+          </div>
+          <div class="card p-6 col-span-12 md:col-span-7">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <div class="mono text-[10px] tracking-[0.2em] text-slate-400">SCORE_STREAM</div>
+                <div class="text-slate-300 text-sm">월례 / 중간 / 기말</div>
+              </div>
+              <div class="flex gap-2 text-[11px]">
+                <span class="tag mono"><span class="inline-block w-2 h-2 rounded-full bg-sky-400 mr-1"></span>MON</span>
+                <span class="tag mono"><span class="inline-block w-2 h-2 rounded-full bg-purple-400 mr-1"></span>MID</span>
+                <span class="tag mono"><span class="inline-block w-2 h-2 rounded-full bg-pink-400 mr-1"></span>FIN</span>
+              </div>
+            </div>
+            <div class="canvas-wrap" style="height:320px"><canvas id="v2-line"></canvas></div>
+          </div>
+
+          <div class="card p-6 col-span-12 md:col-span-5">
+            <div class="mono text-[10px] tracking-[0.2em] text-slate-400 mb-2">TOEFL_iBT</div>
+            <div class="flex items-baseline gap-2 mb-4">
+              <div class="text-5xl font-black mono grad-text" x-text="selected.toefl.total"></div>
+              <div class="mono text-slate-500">/ 120</div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <template x-for="k in ['reading','listening','speaking','writing']" :key="k">
+                <div class="px-3 py-2 rounded-lg bg-white/5 border border-white/5">
+                  <div class="mono text-[10px] text-slate-400 uppercase" x-text="k"></div>
+                  <div class="mono text-2xl font-bold" x-text="selected.toefl[k]"></div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="card p-6 col-span-12 md:col-span-7">
+            <div class="mono text-[10px] tracking-[0.2em] text-slate-400 mb-3">AWARDS & ACTIVITIES</div>
+            <div class="space-y-2">
+              <template x-for="a in selected.awards" :key="a.title+a.date">
+                <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-sky-400/30">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-sky-400/20 to-purple-400/20 grid place-items-center text-lg">🏆</div>
+                    <div>
+                      <div class="font-semibold text-sm" x-text="a.title"></div>
+                      <div class="text-[11px] text-slate-400" x-text="a.org"></div>
+                    </div>
+                  </div>
+                  <div class="mono text-[11px] text-slate-500" x-text="a.date"></div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- ============== VARIANT C · PLAYFUL KIDS ============== -->
+<section x-show="currentTab===3" class="v3 min-h-screen">
+  <div class="max-w-[1400px] mx-auto px-6 py-10">
+    <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
+      <div>
+        <div class="pill bg-yellow-300 inline-block mb-3 fun text-base">📚 Variant C · 키즈 친화</div>
+        <h1 class="fun text-6xl font-bold leading-tight">우리반<br><span class="text-rose-500">성장 다이어리 ✨</span></h1>
+        <p class="mt-3 max-w-lg text-base">입학부터 오늘까지, 한 명 한 명의 성장을 따뜻하게 기록해요.</p>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="card px-4 py-3 text-center bg-yellow-200">
+          <div class="fun text-xs">친구들</div>
+          <div class="fun text-4xl font-bold" x-text="students.length + '명'"></div>
+        </div>
+        <div class="card px-4 py-3 text-center bg-rose-200">
+          <div class="fun text-xs">반 CLE</div>
+          <div class="fun text-4xl font-bold" x-text="avgCLE"></div>
+        </div>
+        <div class="card px-4 py-3 text-center bg-sky-200">
+          <div class="fun text-xs">TOEFL</div>
+          <div class="fun text-4xl font-bold" x-text="avgTOEFL"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-5">
+      <aside class="col-span-12 lg:col-span-3">
+        <div class="card p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="badge bg-mint-200" style="background:#b8ecd2">🧒</div>
+            <div>
+              <div class="fun text-xl font-bold">친구들 🎒</div>
+              <div class="text-xs">가나다 순</div>
+            </div>
+          </div>
+          <div class="space-y-2 max-h-[560px] overflow-auto pr-1">
+            <template x-for="(s,i) in sortedStudents" :key="s.id">
+              <button @click="selectedId = s.id; rerender()"
+                :class="selectedId===s.id ? 'bg-yellow-200' : 'bg-white hover:bg-yellow-50'"
+                class="btn-pop w-full text-left px-3 py-2.5 flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-full grid place-items-center text-lg border-2 border-[#2d1b3d]"
+                     :style="`background:${avatarColor(i)}`" x-text="s.name[0]"></div>
+                <div class="flex-1">
+                  <div class="fun text-lg leading-none" x-text="s.name"></div>
+                  <div class="text-[11px]" x-text="`${s.grade}학년 · ${s.enrollDate.slice(0,4)}년 입학`"></div>
+                </div>
+                <div class="fun text-base font-bold" x-text="avgOfCLE(s)"></div>
+              </button>
+            </template>
+          </div>
+        </div>
+      </aside>
+
+      <main class="col-span-12 lg:col-span-9 space-y-5">
+        <div class="card p-6 flex items-center gap-5 flex-wrap">
+          <div class="w-24 h-24 rounded-full grid place-items-center text-4xl border-4 border-[#2d1b3d] shadow-[4px_4px_0_#2d1b3d]"
+               :style="`background:${avatarColor(selectedIdx)}`" x-text="selected.name[0]"></div>
+          <div class="flex-1">
+            <div class="fun text-4xl font-bold leading-tight" x-text="selected.name + ' 친구 🌟'"></div>
+            <div class="text-sm mt-1" x-text="`${selected.grade}학년 · ${selected.enrollDate} 입학 · 함께한 지 ${monthsSince(selected.enrollDate)}개월`"></div>
+            <div class="flex gap-2 mt-2 flex-wrap">
+              <span class="pill bg-mint-200" style="background:#b8ecd2" x-text="`CLE ${avgOfCLE(selected)}점`"></span>
+              <span class="pill bg-yellow-200" x-text="`교과 ${avgSubject(selected)}점`"></span>
+              <span class="pill bg-rose-200" x-text="`TOEFL ${selected.toefl.total}`"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-12 gap-5">
+          <div class="card p-6 col-span-12 md:col-span-5">
+            <div class="fun text-2xl font-bold mb-1">✏️ 6가지 어학 실력</div>
+            <div class="text-xs mb-3">독해 · 작문 · 청해 · 회화 · 문법 · 어휘</div>
+            <div class="canvas-wrap" style="height:320px"><canvas id="v3-radar"></canvas></div>
+          </div>
+          <div class="card p-6 col-span-12 md:col-span-7">
+            <div class="fun text-2xl font-bold mb-1">📈 시험 점수 타임라인</div>
+            <div class="text-xs mb-3">월례 · 중간 · 기말</div>
+            <div class="canvas-wrap" style="height:320px"><canvas id="v3-line"></canvas></div>
+          </div>
+
+          <div class="card p-6 col-span-12 md:col-span-5 bg-gradient-to-br from-sky-100 to-indigo-100">
+            <div class="fun text-2xl font-bold mb-3">🎯 TOEFL 성적표</div>
+            <div class="flex items-end gap-2 mb-4">
+              <div class="fun text-7xl font-bold text-rose-600" x-text="selected.toefl.total"></div>
+              <div class="fun text-lg pb-3">/ 120</div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <template x-for="(k,i) in ['reading','listening','speaking','writing']" :key="k">
+                <div class="p-3 rounded-2xl border-2 border-[#2d1b3d] shadow-[3px_3px_0_#2d1b3d] text-center"
+                     :style="`background:${['#fff3b0','#b8ecd2','#ffc6c9','#c9d7ff'][i]}`">
+                  <div class="text-[11px] font-bold uppercase" x-text="k"></div>
+                  <div class="fun text-3xl font-bold" x-text="selected.toefl[k]"></div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="card p-6 col-span-12 md:col-span-7">
+            <div class="fun text-2xl font-bold mb-3">🏆 자랑할 만한 순간들</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <template x-for="(a,i) in selected.awards" :key="a.title+a.date">
+                <div class="p-4 rounded-2xl border-3 border-[#2d1b3d] shadow-[3px_3px_0_#2d1b3d] flex items-center gap-3"
+                     :style="`background:${['#fff3b0','#ffc6c9','#b8ecd2','#c9d7ff','#fde5c3','#e9d5ff'][i%6]}`">
+                  <div class="text-3xl" x-text="a.icon || '🎖️'"></div>
+                  <div class="flex-1">
+                    <div class="fun text-lg font-bold leading-none" x-text="a.title"></div>
+                    <div class="text-[11px] mt-1" x-text="`${a.org} · ${a.date}`"></div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- ============== VARIANT D · CORPORATE PRO ============== -->
+<section x-show="currentTab===4" class="v4 min-h-screen">
+  <div class="max-w-[1400px] mx-auto px-6 py-8">
+    <!-- title bar -->
+    <div class="flex items-center justify-between pb-4 border-b-2 border-slate-900 mb-5">
+      <div>
+        <div class="text-[10px] tracking-[0.2em] text-slate-500 font-semibold">VARIANT D · CORPORATE EDITION</div>
+        <h1 class="text-3xl font-bold mt-1">학생 관리 시스템 <span class="text-slate-400 font-normal">· Student Performance Console</span></h1>
+      </div>
+      <div class="text-right text-xs">
+        <div class="font-semibold">SDC (Elementary Seminar)</div>
+        <div class="text-slate-500">Reporting Period · 2024 – 2025</div>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
+      <div class="kpi p-4">
+        <div class="text-[10px] tracking-[0.15em] opacity-70">ENROLLED</div>
+        <div class="text-3xl font-bold tabular mt-1" x-text="students.length"></div>
+        <div class="text-[10px] opacity-60 mt-1">Grade 3: <span x-text="students.filter(s=>s.grade===3).length"></span> · Grade 4: <span x-text="students.filter(s=>s.grade===4).length"></span></div>
+      </div>
+      <div class="kpi p-4">
+        <div class="text-[10px] tracking-[0.15em] opacity-70">AVG CLE</div>
+        <div class="text-3xl font-bold tabular mt-1" x-text="avgCLE"></div>
+        <div class="text-[10px] opacity-60 mt-1">out of 100</div>
+      </div>
+      <div class="kpi p-4">
+        <div class="text-[10px] tracking-[0.15em] opacity-70">AVG SUBJECT</div>
+        <div class="text-3xl font-bold tabular mt-1" x-text="classAvgSubject"></div>
+        <div class="text-[10px] opacity-60 mt-1">monthly + mid + final</div>
+      </div>
+      <div class="kpi p-4">
+        <div class="text-[10px] tracking-[0.15em] opacity-70">AVG TOEFL</div>
+        <div class="text-3xl font-bold tabular mt-1" x-text="avgTOEFL"></div>
+        <div class="text-[10px] opacity-60 mt-1">iBT / 120</div>
+      </div>
+      <div class="kpi gold p-4">
+        <div class="text-[10px] tracking-[0.15em] opacity-70">TOTAL AWARDS</div>
+        <div class="text-3xl font-bold tabular mt-1" x-text="students.reduce((a,s)=>a+s.awards.length,0)"></div>
+        <div class="text-[10px] opacity-70 mt-1">speech + olympiad + honors</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-4">
+      <!-- roster table -->
+      <aside class="col-span-12 lg:col-span-4">
+        <div class="card">
+          <div class="th px-4 py-2 flex items-center justify-between">
+            <span>STUDENT ROSTER · ㄱ–ㅎ</span>
+            <span class="opacity-70" x-text="sortedStudents.length + ' records'"></span>
+          </div>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-[10px] text-slate-500 uppercase border-b">
+                <th class="text-left p-2 font-semibold">Name</th>
+                <th class="text-center p-2 font-semibold">G</th>
+                <th class="text-right p-2 font-semibold">CLE</th>
+                <th class="text-right p-2 font-semibold">TOEFL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="s in sortedStudents" :key="s.id">
+                <tr @click="selectedId = s.id; rerender()"
+                  :class="selectedId===s.id ? 'bg-amber-50 font-semibold' : 'row'"
+                  class="cursor-pointer border-b border-slate-100">
+                  <td class="p-2">
+                    <div x-text="s.name"></div>
+                    <div class="text-[10px] text-slate-500" x-text="s.enrollDate"></div>
+                  </td>
+                  <td class="p-2 text-center tabular" x-text="s.grade"></td>
+                  <td class="p-2 text-right tabular" x-text="avgOfCLE(s)"></td>
+                  <td class="p-2 text-right tabular" x-text="s.toefl.total"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </aside>
+
+      <main class="col-span-12 lg:col-span-8 space-y-4">
+        <div class="card p-5">
+          <div class="flex items-start justify-between flex-wrap gap-3 pb-3 border-b border-slate-200">
+            <div>
+              <div class="text-[10px] tracking-[0.2em] text-slate-500 font-semibold">SUBJECT</div>
+              <h2 class="text-2xl font-bold mt-1" x-text="selected.name + ' · ' + selected.grade + 'th Grade'"></h2>
+              <div class="text-xs text-slate-500 mt-0.5" x-text="`Enrolled ${selected.enrollDate} · ${monthsSince(selected.enrollDate)} months in program`"></div>
+            </div>
+            <div class="grid grid-cols-4 gap-4 text-right text-xs">
+              <div><div class="text-slate-500 uppercase tracking-wider">CLE</div><div class="text-xl font-bold tabular" x-text="avgOfCLE(selected)"></div></div>
+              <div><div class="text-slate-500 uppercase tracking-wider">Subject</div><div class="text-xl font-bold tabular" x-text="avgSubject(selected)"></div></div>
+              <div><div class="text-slate-500 uppercase tracking-wider">TOEFL</div><div class="text-xl font-bold tabular" x-text="selected.toefl.total"></div></div>
+              <div><div class="text-slate-500 uppercase tracking-wider">Awards</div><div class="text-xl font-bold tabular" x-text="selected.awards.length"></div></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-5 mt-5">
+            <div class="col-span-12 md:col-span-5">
+              <div class="text-[10px] tracking-[0.15em] text-slate-500 font-semibold mb-1">FIG. 1 · CLE PROFILE</div>
+              <div class="text-xs text-slate-600 mb-2">독해 / 작문 / 청해 / 회화 / 문법 / 어휘</div>
+              <div class="canvas-wrap" style="height:300px"><canvas id="v4-radar"></canvas></div>
+            </div>
+            <div class="col-span-12 md:col-span-7">
+              <div class="text-[10px] tracking-[0.15em] text-slate-500 font-semibold mb-1">FIG. 2 · SCORE TRAJECTORY</div>
+              <div class="text-xs text-slate-600 mb-2">월례 (monthly) · 중간 (midterm) · 기말 (final)</div>
+              <div class="canvas-wrap" style="height:300px"><canvas id="v4-line"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-12 gap-4">
+          <div class="card col-span-12 md:col-span-5 p-5">
+            <div class="text-[10px] tracking-[0.15em] text-slate-500 font-semibold mb-3">TOEFL iBT BREAKDOWN</div>
+            <table class="w-full text-sm">
+              <tbody>
+                <template x-for="k in ['reading','listening','speaking','writing']" :key="k">
+                  <tr class="border-b border-slate-100">
+                    <td class="py-2 text-slate-600 uppercase tracking-wider text-xs" x-text="k"></td>
+                    <td class="py-2 text-right tabular font-semibold" x-text="selected.toefl[k] + ' / 30'"></td>
+                    <td class="py-2 pl-3 w-32">
+                      <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div class="h-full bg-[#0a2540]" :style="`width:${selected.toefl[k]/30*100}%`"></div>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+                <tr class="bg-[#0a2540] text-white">
+                  <td class="py-2 px-2 text-xs font-bold uppercase tracking-wider">Total</td>
+                  <td class="py-2 px-2 text-right tabular font-bold" x-text="selected.toefl.total + ' / 120'"></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card col-span-12 md:col-span-7 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-[10px] tracking-[0.15em] text-slate-500 font-semibold">AWARDS & ACHIEVEMENTS</div>
+              <div class="text-xs text-slate-500" x-text="selected.awards.length + ' entries'"></div>
+            </div>
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-[10px] text-slate-500 uppercase border-b">
+                  <th class="text-left p-2 font-semibold">Date</th>
+                  <th class="text-left p-2 font-semibold">Title</th>
+                  <th class="text-left p-2 font-semibold">Organizer</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="a in selected.awards" :key="a.title+a.date">
+                  <tr class="border-b border-slate-100 row">
+                    <td class="p-2 tabular text-slate-600 text-xs" x-text="a.date"></td>
+                    <td class="p-2 font-medium" x-text="a.title"></td>
+                    <td class="p-2 text-slate-600" x-text="a.org"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- ============== VARIANT E · BENTO MAGAZINE ============== -->
+<section x-show="currentTab===5" class="v5 min-h-screen">
+  <div class="max-w-[1400px] mx-auto px-6 py-10">
+    <div class="flex items-end justify-between mb-8 flex-wrap gap-4">
+      <div>
+        <div class="micro">Variant E · Bento Issue №05</div>
+        <h1 class="display text-6xl font-black leading-[0.95] mt-2">
+          <em>Six skills.</em><br>
+          한 화면의 성장기록.
+        </h1>
+      </div>
+      <div class="text-right">
+        <div class="micro">EST. 2023 · 초등부 세미나</div>
+        <div class="display text-2xl mt-1" x-text="selected.name + ', Grade ' + selected.grade"></div>
+      </div>
+    </div>
+
+    <!-- Bento Grid -->
+    <div class="grid grid-cols-12 gap-4" style="grid-auto-rows: minmax(120px, auto)">
+      <!-- Hero profile -->
+      <div class="bento dark col-span-12 md:col-span-5 row-span-2 flex flex-col justify-between" style="min-height: 320px">
+        <div>
+          <div class="micro opacity-60">Cover Student</div>
+          <div class="display text-5xl font-black mt-2" x-text="selected.name"></div>
+          <div class="mt-1 opacity-80 text-sm" x-text="selected.grade + '학년 · ' + selected.enrollDate + ' 입학'"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 mt-6">
+          <div><div class="micro opacity-60">CLE</div><div class="display text-3xl font-bold" x-text="avgOfCLE(selected)"></div></div>
+          <div><div class="micro opacity-60">교과</div><div class="display text-3xl font-bold" x-text="avgSubject(selected)"></div></div>
+          <div><div class="micro opacity-60">TOEFL</div><div class="display text-3xl font-bold" x-text="selected.toefl.total"></div></div>
+        </div>
+      </div>
+
+      <!-- Radar -->
+      <div class="bento cream col-span-12 md:col-span-7 row-span-2" style="min-height: 320px">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="micro">Fig. 01 · CLE Hexagon</div>
+            <div class="display text-2xl font-bold mt-1">어학 6개 지표</div>
+          </div>
+          <div class="text-xs opacity-70">독해·작문·청해·회화·문법·어휘</div>
+        </div>
+        <div class="canvas-wrap mt-3" style="height:260px"><canvas id="v5-radar"></canvas></div>
+      </div>
+
+      <!-- Accent stat -->
+      <div class="bento accent col-span-6 md:col-span-3 flex flex-col justify-center">
+        <div class="micro opacity-80">Class Size</div>
+        <div class="display text-6xl font-black" x-text="students.length + ''"></div>
+        <div class="text-xs opacity-80 mt-1">students, ㄱ→ㅎ</div>
+      </div>
+
+      <div class="bento col-span-6 md:col-span-3 flex flex-col justify-center">
+        <div class="micro">Avg CLE</div>
+        <div class="display text-6xl font-black" x-text="avgCLE"></div>
+        <div class="divider my-2"></div>
+        <div class="text-xs">6-skill average across roster</div>
+      </div>
+
+      <div class="bento cream col-span-12 md:col-span-6 flex flex-col justify-center">
+        <div class="flex items-center justify-between">
+          <div class="micro">TOEFL iBT</div>
+          <div class="display text-xl font-bold" x-text="selected.toefl.total + ' / 120'"></div>
+        </div>
+        <div class="grid grid-cols-4 gap-2 mt-3">
+          <template x-for="k in ['reading','listening','speaking','writing']" :key="k">
+            <div>
+              <div class="micro opacity-70" x-text="k.slice(0,3)"></div>
+              <div class="display text-3xl font-bold" x-text="selected.toefl[k]"></div>
+              <div class="h-1 mt-1 bg-black/10 rounded">
+                <div class="h-full bg-[#ff5a3c] rounded" :style="`width:${selected.toefl[k]/30*100}%`"></div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- Line -->
+      <div class="bento col-span-12 md:col-span-8" style="min-height:300px">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="micro">Fig. 02 · Score Stream</div>
+            <div class="display text-2xl font-bold mt-1">월례 · 중간 · 기말</div>
+          </div>
+          <div class="text-xs opacity-60" x-text="`${monthsSince(selected.enrollDate)}개월 누적`"></div>
+        </div>
+        <div class="canvas-wrap mt-3" style="height:240px"><canvas id="v5-line"></canvas></div>
+      </div>
+
+      <!-- Roster strip -->
+      <div class="bento col-span-12 md:col-span-4" style="min-height:300px">
+        <div class="flex items-center justify-between mb-2">
+          <div class="micro">Roster · ㄱ→ㅎ</div>
+          <div class="text-xs opacity-60" x-text="sortedStudents.length + '명'"></div>
+        </div>
+        <div class="space-y-1 max-h-[260px] overflow-auto pr-1">
+          <template x-for="s in sortedStudents" :key="s.id">
+            <button @click="selectedId = s.id; rerender()"
+              :class="selectedId===s.id ? 'bg-[#ff5a3c] text-white' : 'hover:bg-black/5'"
+              class="w-full flex items-center justify-between px-3 py-2 rounded-xl transition">
+              <div class="flex items-center gap-2">
+                <div class="display text-lg font-bold w-5" x-text="s.name[0]"></div>
+                <div>
+                  <div class="text-sm font-semibold" x-text="s.name"></div>
+                  <div class="text-[10px] opacity-70" x-text="s.grade + '학년'"></div>
+                </div>
+              </div>
+              <div class="display text-base font-bold" x-text="avgOfCLE(s)"></div>
+            </button>
+          </template>
+        </div>
+      </div>
+
+      <!-- Awards -->
+      <div class="bento accent col-span-12 md:col-span-7" style="min-height:180px">
+        <div class="flex items-center justify-between mb-3">
+          <div class="micro opacity-90">Awards · 자랑할 만한 순간</div>
+          <div class="text-xs opacity-90" x-text="selected.awards.length + ' entries'"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <template x-for="a in selected.awards.slice(0,6)" :key="a.title+a.date">
+            <div class="p-3 rounded-xl bg-white/15 backdrop-blur flex items-center gap-2">
+              <div class="text-2xl" x-text="a.icon || '✶'"></div>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-semibold truncate" x-text="a.title"></div>
+                <div class="text-[11px] opacity-80" x-text="a.org + ' · ' + a.date"></div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- Quote / narrative -->
+      <div class="bento cream col-span-12 md:col-span-5 flex flex-col justify-center">
+        <div class="micro">Field Note</div>
+        <div class="display text-xl font-semibold italic mt-2 leading-snug">
+          “학습만 남기고, 데이터로 가르친다.”
+        </div>
+        <div class="text-xs opacity-70 mt-2">초등부 세미나는 입학 시점부터 한 명 한 명의 지표를 축적합니다. 이 대시보드는 그 기록의 단면입니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer class="bg-white border-t border-slate-200 mt-8">
+  <div class="max-w-[1400px] mx-auto px-6 py-4 text-xs text-slate-500 flex items-center justify-between flex-wrap gap-2">
+    <div>SDC Dashboard Demo · 초등부 세미나 · 임의 생성된 데이터 (mock)</div>
+    <div>
+      <span class="font-semibold text-slate-700">현재 안:</span>
+      <span x-text="currentVariant.code + ' — ' + currentVariant.label + ' (' + currentVariant.desc + ')'"></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================
+ * Mock data (12 students, Korean names ㄱ→ㅎ, grade 3/4)
+ * ========================================================= */
+const MOCK_STUDENTS = [
+  {id:1, name:'강민준', grade:4, enrollDate:'2023-03-02',
+    cle:{reading:86, writing:74, listening:92, speaking:81, grammar:88, vocab:83},
+    tests: genTests('2023-03-02', [72,78,80,83,85,88,86,90,92], [78,82,85,88], [80,84,87,91]),
+    toefl:{total:96, reading:25, listening:24, speaking:22, writing:25},
+    awards:[
+      {title:'교내 스피치 대회 금상', org:'초등부 세미나', date:'2024-06-15', icon:'🥇'},
+      {title:'월례 시험 최우수', org:'SDC', date:'2024-09-30', icon:'⭐'},
+      {title:'영어 에세이 대회 우수상', org:'교육청', date:'2025-02-10', icon:'📝'},
+    ]},
+  {id:2, name:'김서연', grade:3, enrollDate:'2024-03-04',
+    cle:{reading:78, writing:82, listening:74, speaking:88, grammar:76, vocab:80},
+    tests: genTests('2024-03-04', [68,72,75,78,82,85], [74,80], [76,82]),
+    toefl:{total:84, reading:20, listening:21, speaking:22, writing:21},
+    awards:[
+      {title:'한영 낭독 대회 동상', org:'SDC', date:'2024-11-20', icon:'🎤'},
+      {title:'독서왕 인증', org:'초등부 세미나', date:'2025-01-15', icon:'📚'},
+    ]},
+  {id:3, name:'박지호', grade:4, enrollDate:'2022-09-01',
+    cle:{reading:92, writing:85, listening:86, speaking:78, grammar:94, vocab:90},
+    tests: genTests('2022-09-01', [70,74,78,82,85,84,88,90,92,94,93,95], [76,82,86,90], [80,85,89,93]),
+    toefl:{total:104, reading:28, listening:26, speaking:24, writing:26},
+    awards:[
+      {title:'전국 영어 올림피아드 은상', org:'한국영어교육학회', date:'2024-10-12', icon:'🏅'},
+      {title:'SDC Honor Roll · 2024', org:'SDC', date:'2024-12-20', icon:'🎖️'},
+      {title:'기말 고사 수석', org:'초등부 세미나', date:'2024-12-05', icon:'👑'},
+    ]},
+  {id:4, name:'서하윤', grade:3, enrollDate:'2024-09-02',
+    cle:{reading:72, writing:68, listening:80, speaking:75, grammar:70, vocab:74},
+    tests: genTests('2024-09-02', [62,66,70,74,76], [68], [72]),
+    toefl:{total:76, reading:18, listening:20, speaking:20, writing:18},
+    awards:[
+      {title:'신입생 적응 우수상', org:'SDC', date:'2024-12-15', icon:'🌱'},
+    ]},
+  {id:5, name:'신도현', grade:4, enrollDate:'2023-09-04',
+    cle:{reading:80, writing:86, listening:78, speaking:84, grammar:82, vocab:79},
+    tests: genTests('2023-09-04', [70,75,78,80,82,85,83,86,88], [74,80,84], [78,83,86]),
+    toefl:{total:90, reading:22, listening:23, speaking:23, writing:22},
+    awards:[
+      {title:'스피치 대회 은상', org:'교육청', date:'2024-05-20', icon:'🎤'},
+      {title:'월례 연속 90점 달성', org:'SDC', date:'2024-08-15', icon:'🔥'},
+    ]},
+  {id:6, name:'양시우', grade:3, enrollDate:'2024-03-04',
+    cle:{reading:76, writing:72, listening:82, speaking:80, grammar:74, vocab:78},
+    tests: genTests('2024-03-04', [65,70,73,76,78,80], [72,78], [74,80]),
+    toefl:{total:82, reading:20, listening:21, speaking:21, writing:20},
+    awards:[
+      {title:'교내 토론 대회 우수상', org:'초등부 세미나', date:'2024-10-05', icon:'💬'},
+    ]},
+  {id:7, name:'유채원', grade:4, enrollDate:'2022-03-02',
+    cle:{reading:90, writing:88, listening:85, speaking:92, grammar:86, vocab:91},
+    tests: genTests('2022-03-02', [68,72,76,78,82,85,88,86,90,92,93,94,95,93], [74,80,85,89,92], [78,84,88,92,94]),
+    toefl:{total:108, reading:28, listening:27, speaking:27, writing:26},
+    awards:[
+      {title:'전국 스피치 대회 대상', org:'한국어문학회', date:'2024-07-18', icon:'🏆'},
+      {title:'SDC Top 1% · 2024', org:'SDC', date:'2024-12-31', icon:'💎'},
+      {title:'TOEFL Junior 만점', org:'ETS', date:'2024-04-22', icon:'🎯'},
+      {title:'교과 전 과목 A+', org:'초등부 세미나', date:'2024-12-05', icon:'📊'},
+    ]},
+  {id:8, name:'이주원', grade:3, enrollDate:'2024-03-04',
+    cle:{reading:74, writing:78, listening:70, speaking:72, grammar:80, vocab:76},
+    tests: genTests('2024-03-04', [64,68,72,74,76,78], [70,75], [72,77]),
+    toefl:{total:78, reading:19, listening:19, speaking:20, writing:20},
+    awards:[
+      {title:'작문 대회 장려상', org:'초등부 세미나', date:'2024-11-08', icon:'✏️'},
+    ]},
+  {id:9, name:'장예린', grade:4, enrollDate:'2023-03-02',
+    cle:{reading:84, writing:90, listening:82, speaking:86, grammar:85, vocab:88},
+    tests: genTests('2023-03-02', [72,76,80,82,84,86,88,87,90], [76,82,85,88], [80,84,88,91]),
+    toefl:{total:98, reading:25, listening:24, speaking:24, writing:25},
+    awards:[
+      {title:'영어 글쓰기 대회 금상', org:'교육청', date:'2024-09-12', icon:'✍️'},
+      {title:'SDC 우수 학생', org:'SDC', date:'2024-06-30', icon:'⭐'},
+    ]},
+  {id:10, name:'정은호', grade:3, enrollDate:'2024-09-02',
+    cle:{reading:68, writing:72, listening:74, speaking:78, grammar:70, vocab:72},
+    tests: genTests('2024-09-02', [60,64,68,72,74], [66], [70]),
+    toefl:{total:72, reading:17, listening:18, speaking:19, writing:18},
+    awards:[
+      {title:'성실 출석상', org:'SDC', date:'2024-12-15', icon:'🎖️'},
+    ]},
+  {id:11, name:'최하린', grade:4, enrollDate:'2023-03-02',
+    cle:{reading:88, writing:80, listening:90, speaking:83, grammar:86, vocab:85},
+    tests: genTests('2023-03-02', [74,78,82,84,85,87,88,90,92], [78,84,86,90], [82,86,89,92]),
+    toefl:{total:100, reading:26, listening:26, speaking:23, writing:25},
+    awards:[
+      {title:'스피치 대회 금상', org:'SDC', date:'2024-06-15', icon:'🎤'},
+      {title:'월례 최우수 3회 연속', org:'초등부 세미나', date:'2024-11-30', icon:'🔥'},
+      {title:'리딩 챌린지 완주', org:'SDC', date:'2024-12-20', icon:'📖'},
+    ]},
+  {id:12, name:'한지안', grade:3, enrollDate:'2024-03-04',
+    cle:{reading:80, writing:74, listening:78, speaking:82, grammar:76, vocab:80},
+    tests: genTests('2024-03-04', [68,72,76,80,82,84], [74,80], [78,82]),
+    toefl:{total:86, reading:21, listening:22, speaking:22, writing:21},
+    awards:[
+      {title:'교내 영어 퀴즈 대회 우수상', org:'초등부 세미나', date:'2024-10-25', icon:'🧠'},
+      {title:'신입생 대표 인사', org:'SDC', date:'2024-03-04', icon:'🎀'},
+    ]},
+];
+
+function genTests(enrollDate, monthly, midterm, final){
+  const start = new Date(enrollDate);
+  const tests = [];
+  // monthly: every ~1.5 months starting at enroll+1m
+  monthly.forEach((score, i) => {
+    const d = new Date(start); d.setMonth(d.getMonth() + 1 + i*1.5|0);
+    tests.push({ date: d.toISOString().slice(0,10), type:'월례', score });
+  });
+  midterm.forEach((score, i) => {
+    const d = new Date(start); d.setMonth(d.getMonth() + 4 + i*6);
+    tests.push({ date: d.toISOString().slice(0,10), type:'중간', score });
+  });
+  final.forEach((score, i) => {
+    const d = new Date(start); d.setMonth(d.getMonth() + 7 + i*6);
+    tests.push({ date: d.toISOString().slice(0,10), type:'기말', score });
+  });
+  tests.sort((a,b) => a.date.localeCompare(b.date));
+  return tests;
+}
+
+/* ==========================================================
+ * Alpine component
+ * ========================================================= */
+function dashboard(){
+  return {
+    currentTab: 1,
+    selectedId: 1,
+    students: MOCK_STUDENTS,
+    variants: [
+      { id:1, code:'A', label:'미니멀',   desc:'Notion / Linear 스타일 · 단정한 타이포' },
+      { id:2, code:'B', label:'다크모드', desc:'Vercel / Stripe 스타일 · 글래스모피즘' },
+      { id:3, code:'C', label:'키즈',     desc:'초등부 친화 · 팝업 컬러 · 손글씨체' },
+      { id:4, code:'D', label:'코퍼릿',   desc:'전통적 대시보드 · 표 중심 · Bloomberg 느낌' },
+      { id:5, code:'E', label:'벤토',     desc:'매거진 벤토 그리드 · 디스플레이 타이포' },
+    ],
+    charts: {},
+
+    get currentVariant(){ return this.variants.find(v => v.id === this.currentTab); },
+    get sortedStudents(){ return [...this.students].sort((a,b) => a.name.localeCompare(b.name,'ko')); },
+    get selected(){ return this.students.find(s => s.id == this.selectedId) || this.students[0]; },
+    get selectedIdx(){ return this.sortedStudents.findIndex(s => s.id == this.selectedId); },
+    get avgCLE(){
+      const total = this.students.reduce((sum,s) => sum + Number(this.avgOfCLE(s)), 0);
+      return (total / this.students.length).toFixed(1);
+    },
+    get avgTOEFL(){
+      const total = this.students.reduce((sum,s) => sum + s.toefl.total, 0);
+      return (total / this.students.length).toFixed(0);
+    },
+    get classAvgSubject(){
+      const total = this.students.reduce((sum,s) => sum + Number(this.avgSubject(s)), 0);
+      return (total / this.students.length).toFixed(1);
+    },
+
+    avgOfCLE(s){
+      const v = Object.values(s.cle);
+      return (v.reduce((a,b) => a+b, 0) / v.length).toFixed(1);
+    },
+    avgSubject(s){
+      if (!s.tests.length) return '0';
+      return (s.tests.reduce((a,t) => a+t.score, 0) / s.tests.length).toFixed(1);
+    },
+    monthsSince(date){
+      const d = new Date(date), now = new Date();
+      return (now.getFullYear()-d.getFullYear())*12 + (now.getMonth()-d.getMonth());
+    },
+    avatarColor(i){
+      const palette = ['#fff3b0','#b8ecd2','#ffc6c9','#c9d7ff','#fde5c3','#e9d5ff','#ffe0b8','#d0f4de','#ffd1dc','#c6e2ff','#fde8f6','#e0f4ff'];
+      return palette[(i||0) % palette.length];
+    },
+
+    setTab(id){ this.currentTab = id; this.rerender(); },
+    rerender(){
+      // destroy all charts then render for current tab on next frame
+      Object.values(this.charts).forEach(c => c?.destroy());
+      this.charts = {};
+      requestAnimationFrame(() => this.renderCharts(this.currentTab));
+    },
+    init(){
+      this.$watch('currentTab', () => this.rerender());
+      requestAnimationFrame(() => this.renderCharts(this.currentTab));
+    },
+
+    renderCharts(tab){
+      const themes = {
+        1: { // minimal
+          radar:{ fill:'rgba(198,96,74,.18)', stroke:'#c6604a', grid:'#e8e4dc', label:'#555', bg:'#fff' },
+          line: { mon:'#94a3b8', mid:'#f59e0b', fin:'#e11d48', grid:'#efece6', text:'#333' }
+        },
+        2: { // dark
+          radar:{ fill:'rgba(125,211,252,.2)', stroke:'#7dd3fc', grid:'rgba(255,255,255,.08)', label:'#cbd5e1', bg:'transparent' },
+          line: { mon:'#7dd3fc', mid:'#a78bfa', fin:'#f472b6', grid:'rgba(255,255,255,.08)', text:'#cbd5e1' }
+        },
+        3: { // playful
+          radar:{ fill:'rgba(251,113,133,.25)', stroke:'#e11d48', grid:'#2d1b3d22', label:'#2d1b3d', bg:'#fff' },
+          line: { mon:'#38bdf8', mid:'#f59e0b', fin:'#e11d48', grid:'#2d1b3d22', text:'#2d1b3d' }
+        },
+        4: { // corporate
+          radar:{ fill:'rgba(10,37,64,.15)', stroke:'#0a2540', grid:'#cbd5e1', label:'#475569', bg:'#fff' },
+          line: { mon:'#64748b', mid:'#b8860b', fin:'#0a2540', grid:'#e2e8f0', text:'#334155' }
+        },
+        5: { // bento
+          radar:{ fill:'rgba(255,90,60,.22)', stroke:'#ff5a3c', grid:'rgba(20,20,20,.12)', label:'#141414', bg:'transparent' },
+          line: { mon:'#141414', mid:'#ff5a3c', fin:'#b8860b', grid:'rgba(20,20,20,.12)', text:'#141414' }
+        },
+      };
+      const theme = themes[tab];
+      if (!theme) return;
+      const s = this.selected;
+      const cleLabels = ['독해','작문','청해','회화','문법','어휘'];
+      const cleData = ['reading','writing','listening','speaking','grammar','vocab'].map(k => s.cle[k]);
+
+      // RADAR
+      const radarId = `v${tab}-radar`;
+      const radarEl = document.getElementById(radarId);
+      if (radarEl) {
+        const prev = Chart.getChart(radarEl); if (prev) prev.destroy();
+        this.charts[radarId] = new Chart(radarEl, {
+          type:'radar',
+          data:{
+            labels: cleLabels,
+            datasets:[{
+              label: s.name, data: cleData,
+              backgroundColor: theme.radar.fill, borderColor: theme.radar.stroke, borderWidth:2,
+              pointBackgroundColor: theme.radar.stroke, pointRadius:4, pointHoverRadius:6
+            }]
+          },
+          options:{
+            responsive:true, maintainAspectRatio:false,
+            plugins:{ legend:{ display:false } },
+            scales:{ r:{
+              min:0, max:100,
+              grid:{ color: theme.radar.grid }, angleLines:{ color: theme.radar.grid },
+              pointLabels:{ color: theme.radar.label, font:{ size:12, weight:'600' } },
+              ticks:{ display:false, stepSize:20 }
+            }}
+          }
+        });
+      }
+
+      // LINE
+      const lineId = `v${tab}-line`;
+      const lineEl = document.getElementById(lineId);
+      if (lineEl) {
+        const prev = Chart.getChart(lineEl); if (prev) prev.destroy();
+        const pts = s.tests;
+        const typeColor = (t) => t==='월례' ? theme.line.mon : t==='중간' ? theme.line.mid : theme.line.fin;
+        const typeRadius = (t) => t==='월례' ? 4 : t==='중간' ? 6 : 7;
+        this.charts[lineId] = new Chart(lineEl, {
+          type:'line',
+          data:{
+            labels: pts.map(p => p.date.slice(2,7)),
+            datasets:[{
+              label:'점수',
+              data: pts.map(p => p.score),
+              borderColor: theme.line.mon,
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              tension: 0.35,
+              pointBackgroundColor: pts.map(p => typeColor(p.type)),
+              pointBorderColor: pts.map(p => typeColor(p.type)),
+              pointRadius: pts.map(p => typeRadius(p.type)),
+              pointHoverRadius: pts.map(p => typeRadius(p.type) + 2),
+              pointStyle: pts.map(p => p.type==='월례' ? 'circle' : p.type==='중간' ? 'rectRounded' : 'rectRot'),
+            }]
+          },
+          options:{
+            responsive:true, maintainAspectRatio:false,
+            plugins:{
+              legend:{ display:false },
+              tooltip:{
+                callbacks:{
+                  title: (items) => pts[items[0].dataIndex].date,
+                  label: (item) => `${pts[item.dataIndex].type} · ${item.parsed.y}점`
+                }
+              }
+            },
+            scales:{
+              x:{ grid:{ color: theme.line.grid }, ticks:{ color: theme.line.text, font:{size:11} } },
+              y:{ min:50, max:100, grid:{ color: theme.line.grid }, ticks:{ color: theme.line.text, font:{size:11} } }
+            }
+          }
+        });
+      }
+    }
+  };
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; width: 100%; overflow: hidden; }
+body { font-family: 'Noto Sans KR', 'Inter', system-ui, sans-serif; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Variant A — Minimal Notion/Linear */
+.v-a { background: #fafaf8; color: #1a1a1a; }
+.v-a .card { background: #fff; border: 1px solid #ececea; border-radius: 14px; }
+.v-a .display { font-family: 'Playfair Display', serif; letter-spacing: -0.02em; }
+.v-a .muted { color: #7b7b76; }
+.v-a .accent { color: #c6604a; }
+.v-a .chip { background: #f2efe8; color: #6b6658; border-radius: 999px; padding: 2px 10px; font-size: 11px; font-weight: 500; }
+
+/* Variant B — Dark Glassmorphism */
+.v-b {
+  background:
+    radial-gradient(1000px 520px at 8% -10%, rgba(56,189,248,.14), transparent 60%),
+    radial-gradient(900px 460px at 112% 8%, rgba(168,85,247,.18), transparent 60%),
+    #07090d;
+  color: #e5e7eb;
+}
+.v-b .card {
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+}
+.v-b .glow { box-shadow: 0 0 0 1px rgba(56,189,248,.35), 0 10px 40px -10px rgba(56,189,248,.35); }
+.v-b .mono { font-family: 'JetBrains Mono', monospace; }
+.v-b .grad {
+  background: linear-gradient(90deg,#7dd3fc,#a78bfa,#f472b6);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.v-b .tag { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); color: #cbd5e1; border-radius: 8px; padding: 2px 8px; font-size: 11px; }
+
+/* Variant C — Playful Kids */
+.v-c { background: linear-gradient(160deg,#fff7e6 0%,#ffeef0 40%,#eaf7ff 100%); color: #2d1b3d; }
+.v-c .card { background: #fff; border-radius: 24px; border: 3px solid #2d1b3d; box-shadow: 5px 5px 0 #2d1b3d; }
+.v-c .fun { font-family: 'Gaegu','Noto Sans KR',cursive; }
+.v-c .pill { border-radius: 999px; padding: 3px 12px; font-weight: 700; font-size: 12px; border: 2px solid #2d1b3d; }
+.v-c .btn-pop { border: 3px solid #2d1b3d; border-radius: 999px; box-shadow: 3px 3px 0 #2d1b3d; transition: transform .12s; }
+.v-c .btn-pop:active { transform: translate(3px,3px); box-shadow: none; }
+
+/* Variant D — Corporate (Burgundy + Gold) */
+.v-d { background: #f4f1ea; color: #1a1a1a; font-family: 'Inter','Noto Sans KR',sans-serif; }
+.v-d .card { background: #fff; border-top: 3px solid #8b1e2e; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+.v-d .kpi { background: #8b1e2e; color: #fff; border-radius: 4px; }
+.v-d .kpi.gold { background: linear-gradient(135deg,#c99b3b,#fdf4dc); color: #3a2400; }
+.v-d .th { background: #8b1e2e; color: #fff; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+.v-d .tabular { font-variant-numeric: tabular-nums; }
+
+/* Variant E — Bento Magazine */
+.v-e { background: #efeae2; color: #141414; }
+.v-e .bento { background: #fff; border-radius: 20px; padding: 18px; position: relative; overflow: hidden; }
+.v-e .bento.dark { background: #141414; color: #f5f1ea; }
+.v-e .bento.accent { background: #ff5a3c; color: #fff; }
+.v-e .bento.cream { background: #fff8ec; }
+.v-e .display { font-family: 'Playfair Display','Noto Serif KR',serif; letter-spacing: -0.02em; }
+.v-e .micro { font-family: 'JetBrains Mono',monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
