@@ -30,15 +30,15 @@ export default function Dashboard() {
   const cle = cleAt(selected, cursor);
 
   return (
-    <div className="h-full px-6 py-4 grid grid-cols-12 gap-4 overflow-hidden">
-      <div className="col-span-12 flex items-center justify-between">
+    <div className="min-h-screen px-3 lg:px-6 py-3 lg:py-4 flex flex-col gap-3 lg:gap-4 lg:h-full lg:grid lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 lg:col-span-12">
         <div>
           <div className="mono text-[10px] tracking-[0.2em] text-sky-300/80">VARIANT B · DARK · T = {cursor}</div>
-          <div className="text-3xl font-black leading-tight">
+          <div className="text-2xl sm:text-3xl font-black leading-tight">
             <span className="grad">DATA-DRIVEN</span> LEARNING OPS
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
           <Stat label="CLASS CLE" value={classCLE} />
           <Stat label="ATTEND %" value={`${classAtt}%`} />
           <Stat label="500-SENT" value={classMemo} />
@@ -46,12 +46,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <aside className="col-span-3 card p-3 min-h-0 overflow-hidden flex flex-col">
+      <aside className="card p-3 flex flex-col lg:col-span-3 lg:min-h-0 lg:overflow-hidden">
         <div className="flex items-center justify-between mb-2">
           <div className="mono text-[10px] tracking-[0.2em] opacity-70">ROSTER</div>
           <div className="tag mono">{roster.length} REC</div>
         </div>
-        <div className="flex-1 min-h-0 overflow-auto space-y-1 pr-1">
+        <div className="max-h-[280px] lg:max-h-none lg:flex-1 lg:min-h-0 overflow-auto space-y-1 pr-1">
           {byAvg.map((r, i) => (
             <button key={r.s.id} onClick={() => setSelected(r.s.id)}
               className={`w-full text-left px-2.5 py-2 rounded-xl border flex items-center gap-2
@@ -67,8 +67,8 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      <section className="col-span-9 grid grid-cols-12 grid-rows-2 gap-4 min-h-0">
-        <div className="col-span-7 card glow p-4 min-h-0 flex flex-col">
+      <section className="flex flex-col gap-3 lg:col-span-9 lg:grid lg:grid-cols-12 lg:grid-rows-2 lg:gap-4 lg:min-h-0">
+        <div className="card glow p-4 flex flex-col min-h-[320px] lg:min-h-0 lg:col-span-7">
           <div className="flex items-start justify-between">
             <div>
               <div className="mono text-[10px] opacity-60">COHORT RANK · KILLER</div>
@@ -88,13 +88,13 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="col-span-5 card p-4 min-h-0 flex flex-col">
+        <div className="card p-4 flex flex-col min-h-[280px] lg:min-h-0 lg:col-span-5">
           <div className="mono text-[10px] opacity-60">HEXAGON</div>
           <div className="text-sm mt-0.5">어학 6개 지표</div>
-          <div className="flex-1 min-h-0"><Radar current={cle} theme={radarTheme} /></div>
+          <div className="h-[220px] lg:h-auto lg:flex-1 lg:min-h-0"><Radar current={cle} theme={radarTheme} /></div>
         </div>
 
-        <div className="col-span-12 card p-4 min-h-0 flex flex-col">
+        <div className="card p-4 flex flex-col min-h-[240px] lg:min-h-0 lg:col-span-12">
           <div className="flex items-center justify-between mb-2">
             <div className="mono text-[10px] opacity-60">COHORT AVG · {cursor}</div>
             <div className="flex gap-2">

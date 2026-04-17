@@ -47,18 +47,20 @@ export default function Detail() {
   }, [cursor, s, cle, cleStart, monthsIn]);
 
   return (
-    <div className="h-full px-6 py-4 grid grid-cols-12 grid-rows-6 gap-3 overflow-hidden">
+    <div className="min-h-screen px-3 lg:px-6 py-3 lg:py-4 flex flex-col gap-3 lg:h-full lg:grid lg:grid-cols-12 lg:grid-rows-6 lg:overflow-hidden">
       {/* Hero profile + AI coach (killer) */}
-      <div className="col-span-12 row-span-2 card p-4 flex items-center gap-5 relative">
-        <div className="w-24 h-24 rounded-full grid place-items-center text-4xl border-4 border-[#2d1b3d] shadow-[4px_4px_0_#2d1b3d]"
-          style={{ background: avatar(s.id) }}>{s.name[0]}</div>
-        <div className="flex-1">
-          <span className="pill inline-block" style={{ background: '#fde5c3' }}>KILLER · AI 코치</span>
-          <div className="fun text-4xl font-bold mt-1">{s.name} 친구 🌟</div>
-          <div className="text-xs mt-0.5">{s.grade}학년 · {s.enrollDate} 입학 · 함께한 지 {monthsIn}개월</div>
+      <div className="card p-4 flex flex-col lg:flex-row lg:items-center gap-4 relative lg:col-span-12 lg:row-span-2">
+        <div className="flex items-center gap-4 flex-1">
+          <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full grid place-items-center text-3xl sm:text-4xl border-4 border-[#2d1b3d] shadow-[4px_4px_0_#2d1b3d] shrink-0"
+            style={{ background: avatar(s.id) }}>{s.name[0]}</div>
+          <div className="flex-1 min-w-0">
+            <span className="pill inline-block" style={{ background: '#fde5c3' }}>KILLER · AI 코치</span>
+            <div className="fun text-3xl sm:text-4xl font-bold mt-1">{s.name} 친구 🌟</div>
+            <div className="text-xs mt-0.5">{s.grade}학년 · {s.enrollDate} 입학 · 함께한 지 {monthsIn}개월</div>
+          </div>
         </div>
 
-        <div className="flex items-end gap-3 max-w-[40%]">
+        <div className="flex items-end gap-3 lg:max-w-[40%]">
           <AnimatePresence mode="wait">
             <motion.div
               key={message}
@@ -81,26 +83,26 @@ export default function Detail() {
         </div>
       </div>
 
-      <div className="col-span-5 row-span-4 card p-4 flex flex-col min-h-0">
+      <div className="card p-4 flex flex-col min-h-[280px] lg:min-h-0 lg:col-span-5 lg:row-span-4">
         <div className="fun text-2xl font-bold">✏️ 6가지 실력</div>
         <div className="text-[11px]">독해·작문·청해·회화·문법·어휘</div>
-        <div className="flex-1 min-h-0"><Radar current={cle} theme={radarTheme} /></div>
+        <div className="h-[220px] lg:h-auto lg:flex-1 lg:min-h-0"><Radar current={cle} theme={radarTheme} /></div>
       </div>
 
-      <div className="col-span-7 row-span-2 card p-4 flex flex-col min-h-0">
+      <div className="card p-4 flex flex-col min-h-[240px] lg:min-h-0 lg:col-span-7 lg:row-span-2">
         <div className="fun text-2xl font-bold">📈 시험 점수 타임라인</div>
-        <div className="flex-1 min-h-0"><ScoreLine tests={tests} theme={lineTheme} /></div>
+        <div className="h-[180px] lg:h-auto lg:flex-1 lg:min-h-0"><ScoreLine tests={tests} theme={lineTheme} /></div>
       </div>
 
-      <div className="col-span-3 row-span-2 card p-3 flex flex-col items-center justify-center" style={{ background: 'linear-gradient(160deg,#b8ecd2,#c9d7ff)' }}>
+      <div className="card p-3 flex flex-col items-center justify-center min-h-[160px] lg:min-h-0 lg:col-span-3 lg:row-span-2" style={{ background: 'linear-gradient(160deg,#b8ecd2,#c9d7ff)' }}>
         <div className="fun text-lg">🎯 TOEFL</div>
         <div className="fun text-5xl font-bold text-rose-600">{toefl.total}</div>
         <div className="fun text-sm">/ 120</div>
       </div>
 
-      <div className="col-span-4 row-span-2 card p-3 flex flex-col gap-2">
+      <div className="card p-3 flex flex-col gap-2 lg:col-span-4 lg:row-span-2">
         <div className="fun text-lg">🎟️ 출석 · 📖 500문장</div>
-        <div className="flex-1 grid grid-cols-2 gap-2">
+        <div className="flex-1 grid grid-cols-2 gap-2 min-h-[120px] lg:min-h-0">
           <div className="rounded-2xl grid place-items-center border-3 border-[#2d1b3d] p-2" style={{ background:'#fff3b0' }}>
             <div className="fun text-[11px]">출석</div>
             <div className="fun text-3xl font-bold">{attendanceAt(s, cursor)}%</div>
@@ -113,9 +115,9 @@ export default function Detail() {
         </div>
       </div>
 
-      <div className="col-span-12 row-span-2 card p-3 flex flex-col min-h-0">
+      <div className="card p-3 flex flex-col lg:col-span-12 lg:row-span-2 lg:min-h-0">
         <div className="fun text-lg font-bold mb-1">🏆 자랑할 만한 순간들 ({awards.length})</div>
-        <div className="flex-1 min-h-0 flex gap-2 overflow-x-auto">
+        <div className="flex gap-2 overflow-x-auto lg:flex-1 lg:min-h-0">
           {awards.map((a, i) => (
             <div key={a.title + a.date} className="flex-shrink-0 p-2 px-3 rounded-2xl border-3 border-[#2d1b3d] shadow-[3px_3px_0_#2d1b3d] flex items-center gap-2"
               style={{ background: ['#fff3b0','#ffc6c9','#b8ecd2','#c9d7ff','#fde5c3','#e9d5ff'][i % 6] }}>

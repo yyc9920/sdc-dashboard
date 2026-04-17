@@ -34,28 +34,28 @@ export default function Detail() {
   };
 
   return (
-    <div className="h-full px-6 py-4 grid grid-cols-12 gap-3 overflow-hidden" style={{ gridTemplateRows: 'auto 1fr' }}>
+    <div className="min-h-screen px-3 lg:px-6 py-3 lg:py-4 flex flex-col gap-3 lg:h-full lg:grid lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:overflow-hidden">
       {/* Header with Growth Reel CTA */}
-      <div className="col-span-12 flex items-end justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 lg:col-span-12">
         <div>
           <div className="micro">Variant E · KILLER · Growth Reel</div>
-          <div className="display text-3xl font-black leading-tight">{s.name}의 성장 리플레이</div>
+          <div className="display text-2xl sm:text-3xl font-black leading-tight">{s.name}의 성장 리플레이</div>
           <div className="text-xs opacity-60 mt-0.5">{s.enrollDate} 입학 · {monthsIn} / {totalMonths} 개월차</div>
         </div>
         <div className="flex items-center gap-2">
           <motion.button
             onClick={startReel}
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
-            className="px-4 py-2 rounded-full bg-[#ff5a3c] text-white font-bold shadow-lg">
+            className="px-4 py-2 rounded-full bg-[#ff5a3c] text-white font-bold shadow-lg whitespace-nowrap">
             {isPlaying ? '▶ 재생 중…' : '▶ 입학부터 재생'}
           </motion.button>
-          <div className="text-[10px] opacity-60">{playSpeed}× 속도 (하단 컨트롤)</div>
+          <div className="text-[10px] opacity-60 hidden sm:block">{playSpeed}× 속도 (하단 컨트롤)</div>
         </div>
       </div>
 
-      <div className="col-span-12 grid grid-cols-12 gap-3 min-h-0" style={{ gridTemplateRows: 'repeat(3, minmax(0, 1fr))' }}>
+      <div className="grid grid-cols-1 gap-3 lg:col-span-12 lg:grid-cols-12 lg:min-h-0 lg:grid-rows-[repeat(3,minmax(0,1fr))]">
         {/* Cover card with live progress ring */}
-        <div className="bento dark col-span-4 row-span-2 flex flex-col justify-between">
+        <div className="bento dark flex flex-col justify-between min-h-[280px] lg:min-h-0 lg:col-span-4 lg:row-span-2">
           <div>
             <div className="micro opacity-70">Reel · Now Playing</div>
             <motion.div
@@ -90,7 +90,7 @@ export default function Detail() {
         </div>
 
         {/* Radar animates as cursor moves */}
-        <div className="bento cream col-span-5 row-span-2 min-h-0 flex flex-col">
+        <div className="bento cream flex flex-col min-h-[280px] lg:min-h-0 lg:col-span-5 lg:row-span-2">
           <div className="flex items-center justify-between">
             <div>
               <div className="micro">Fig. A · CLE</div>
@@ -103,19 +103,19 @@ export default function Detail() {
             initial={{ opacity: 0.6, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex-1 min-h-0 mt-1">
+            className="h-[220px] lg:h-auto lg:flex-1 lg:min-h-0 mt-1">
             <Radar current={cle} theme={radarTheme} />
           </motion.div>
         </div>
 
-        <div className="bento accent col-span-3 row-span-1 flex flex-col justify-center">
+        <div className="bento accent flex flex-col justify-center min-h-[120px] lg:min-h-0 lg:col-span-3 lg:row-span-1">
           <div className="micro opacity-80">Tests Logged</div>
           <motion.div key={tests.length} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             className="display text-5xl font-black leading-none">{tests.length}</motion.div>
           <div className="text-xs opacity-80">누적 (월례·중간·기말)</div>
         </div>
 
-        <div className="bento col-span-3 row-span-1 flex flex-col justify-center">
+        <div className="bento flex flex-col justify-center min-h-[120px] lg:min-h-0 lg:col-span-3 lg:row-span-1">
           <div className="micro">Attendance</div>
           <motion.div key={attendanceAt(s, cursor)} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             className="display text-5xl font-black leading-none">{attendanceAt(s, cursor)}%</motion.div>
@@ -127,7 +127,7 @@ export default function Detail() {
         </div>
 
         {/* Score stream */}
-        <div className="bento col-span-8 row-span-1 flex flex-col min-h-0">
+        <div className="bento flex flex-col min-h-[240px] lg:min-h-0 lg:col-span-8 lg:row-span-1">
           <div className="flex items-center justify-between mb-1">
             <div>
               <div className="micro">Fig. B · Score Stream</div>
@@ -135,11 +135,11 @@ export default function Detail() {
             </div>
             <div className="text-[10px] opacity-60">{tests.length}건 누적</div>
           </div>
-          <div className="flex-1 min-h-0"><ScoreLine tests={tests} theme={lineTheme} /></div>
+          <div className="h-[180px] lg:h-auto lg:flex-1 lg:min-h-0"><ScoreLine tests={tests} theme={lineTheme} /></div>
         </div>
 
         {/* Awards bar */}
-        <div className="bento accent col-span-4 row-span-1 flex flex-col">
+        <div className="bento accent flex flex-col min-h-[140px] lg:min-h-0 lg:col-span-4 lg:row-span-1">
           <div className="micro opacity-80">Awards · {awards.length}</div>
           <div className="flex-1 mt-1 flex items-center gap-2 overflow-x-auto">
             {awards.slice(0, 4).map(a => (

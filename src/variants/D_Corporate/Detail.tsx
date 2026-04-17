@@ -19,14 +19,14 @@ export default function Detail() {
   const awards = awardsAt(s, cursor);
 
   return (
-    <div className="h-full px-6 py-3 grid grid-cols-12 grid-rows-6 gap-3 overflow-hidden">
+    <div className="min-h-screen px-3 lg:px-6 py-3 flex flex-col gap-3 lg:h-full lg:grid lg:grid-cols-12 lg:grid-rows-6 lg:overflow-hidden">
       {/* Header strip */}
-      <div className="col-span-12 row-span-1 flex items-center justify-between pb-2 border-b-2 border-burgundy-500">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b-2 border-burgundy-500 lg:col-span-12 lg:row-span-1">
         <div>
           <div className="text-[10px] tracking-[0.2em] text-burgundy-700 font-semibold">VARIANT D · KILLER · HEAT PIVOT MATRIX</div>
-          <div className="text-2xl font-bold">{s.name} <span className="text-slate-400 font-normal">· {s.grade}th Grade · Enrolled {s.enrollDate}</span></div>
+          <div className="text-xl sm:text-2xl font-bold">{s.name} <span className="text-slate-400 font-normal">· {s.grade}th Grade · Enrolled {s.enrollDate}</span></div>
         </div>
-        <div className="grid grid-cols-5 gap-2 text-right">
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 text-right">
           {[
             ['CLE', cleAvg(cle)],
             ['ATT %', `${attendanceAt(s, cursor)}%`],
@@ -43,7 +43,7 @@ export default function Detail() {
       </div>
 
       {/* Heat Pivot Matrix — THE KILLER */}
-      <div className="col-span-8 row-span-3 card p-3 flex flex-col min-h-0">
+      <div className="card p-3 flex flex-col lg:col-span-8 lg:row-span-3 lg:min-h-0">
         <div className="flex items-center justify-between mb-2">
           <div>
             <div className="text-[10px] tracking-[0.14em] text-burgundy-700 font-semibold">HEAT PIVOT · SKILL × PERIOD</div>
@@ -58,15 +58,15 @@ export default function Detail() {
       </div>
 
       {/* Radar */}
-      <div className="col-span-4 row-span-3 card p-3 flex flex-col min-h-0">
+      <div className="card p-3 flex flex-col min-h-[280px] lg:min-h-0 lg:col-span-4 lg:row-span-3">
         <div className="text-[10px] tracking-[0.14em] text-burgundy-700 font-semibold">FIG. 1 · CLE PROFILE</div>
-        <div className="flex-1 min-h-0"><Radar current={cle} theme={radarTheme} /></div>
+        <div className="h-[220px] lg:h-auto lg:flex-1 lg:min-h-0"><Radar current={cle} theme={radarTheme} /></div>
       </div>
 
       {/* Score table */}
-      <div className="col-span-5 row-span-2 card p-3 flex flex-col min-h-0">
+      <div className="card p-3 flex flex-col lg:col-span-5 lg:row-span-2 lg:min-h-0">
         <div className="text-[10px] tracking-[0.14em] text-burgundy-700 font-semibold mb-1">SCORE LEDGER (커서 기준)</div>
-        <div className="flex-1 min-h-0 overflow-auto">
+        <div className="max-h-[240px] lg:max-h-none lg:flex-1 lg:min-h-0 overflow-auto">
           <table className="w-full text-xs">
             <thead>
               <tr className="text-[9px] text-slate-500 uppercase border-b">
@@ -92,7 +92,7 @@ export default function Detail() {
       </div>
 
       {/* TOEFL breakdown */}
-      <div className="col-span-4 row-span-2 card p-3 flex flex-col">
+      <div className="card p-3 flex flex-col lg:col-span-4 lg:row-span-2">
         <div className="text-[10px] tracking-[0.14em] text-burgundy-700 font-semibold mb-1">TOEFL iBT BREAKDOWN</div>
         <table className="w-full text-sm flex-1">
           <tbody>
@@ -115,7 +115,7 @@ export default function Detail() {
       </div>
 
       {/* Awards table */}
-      <div className="col-span-3 row-span-2 card p-3 flex flex-col min-h-0">
+      <div className="card p-3 flex flex-col lg:col-span-3 lg:row-span-2 lg:min-h-0">
         <div className="text-[10px] tracking-[0.14em] text-burgundy-700 font-semibold mb-1">AWARDS · {awards.length}</div>
         <div className="flex-1 min-h-0 overflow-auto space-y-1">
           {awards.map(a => (

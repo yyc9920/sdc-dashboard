@@ -26,16 +26,16 @@ export default function Dashboard() {
   const cle = cleAt(selected, cursor);
 
   return (
-    <div className="h-full px-6 py-4 grid grid-cols-12 gap-4 overflow-hidden" style={{ gridTemplateRows: 'auto 1fr' }}>
+    <div className="min-h-screen px-3 lg:px-6 py-3 lg:py-4 flex flex-col gap-3 lg:gap-4 lg:h-full lg:grid lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:overflow-hidden">
       {/* Hero headline */}
-      <div className="col-span-12 flex items-center justify-between">
+      <div className="lg:col-span-12 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="chip inline-block">Variant A · Minimal · {cursor}</div>
-          <div className="display text-[28px] leading-tight font-bold mt-1">
+          <div className="display text-[22px] sm:text-[28px] leading-tight font-bold mt-1">
             학습만 남기고, <span className="accent italic">데이터로 가르친다.</span>
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-6 text-right">
+        <div className="grid grid-cols-4 gap-3 sm:gap-6 text-right">
           <Kpi label="반 CLE"  value={classAvgCLE} />
           <Kpi label="출석 %" value={`${classAvgAtt}%`} />
           <Kpi label="500문장" value={`${classAvgMemo}`} suffix="/500" />
@@ -44,12 +44,12 @@ export default function Dashboard() {
       </div>
 
       {/* Roster */}
-      <aside className="col-span-3 card p-3 min-h-0 overflow-hidden flex flex-col">
+      <aside className="card p-3 flex flex-col lg:col-span-3 lg:min-h-0 lg:overflow-hidden">
         <div className="flex items-center justify-between mb-2">
           <div className="text-[11px] font-semibold uppercase tracking-wider">명단 · ㄱ–ㅎ</div>
           <div className="muted text-[10px]">{roster.length}명</div>
         </div>
-        <div className="flex-1 min-h-0 overflow-auto space-y-1 pr-1">
+        <div className="max-h-[320px] lg:max-h-none lg:flex-1 lg:min-h-0 overflow-auto space-y-1 pr-1">
           {roster.map(s => {
             const avg = cleAvg(cleAt(s, cursor));
             return (
@@ -68,8 +68,8 @@ export default function Dashboard() {
       </aside>
 
       {/* Main grid */}
-      <section className="col-span-9 grid grid-cols-12 gap-4 min-h-0" style={{ gridTemplateRows: '1fr 1fr' }}>
-        <div className="col-span-7 card p-4 min-h-0 flex flex-col">
+      <section className="flex flex-col gap-3 lg:col-span-9 lg:grid lg:grid-cols-12 lg:gap-4 lg:min-h-0 lg:grid-rows-[1fr_1fr]">
+        <div className="card p-4 flex flex-col min-h-[320px] lg:min-h-0 lg:col-span-7">
           <div className="flex items-start justify-between">
             <div>
               <div className="chip inline-block mb-1">선택된 학생</div>
@@ -87,27 +87,27 @@ export default function Dashboard() {
             <Mini label="TOEFL" value={toeflAt(selected, cursor).total} />
           </div>
           <div className="text-[11px] font-semibold uppercase tracking-wider mt-3">시험 추이</div>
-          <div className="flex-1 min-h-0">
+          <div className="h-[180px] lg:h-auto lg:flex-1 lg:min-h-0">
             <ScoreLine tests={testsAt(selected, cursor)} theme={{ line:'#c6604a', mon:'#94a3b8', mid:'#f59e0b', fin:'#e11d48', grid:'#efece6', text:'#7b7b76' }} />
           </div>
         </div>
 
-        <div className="col-span-5 card p-4 min-h-0 flex flex-col">
+        <div className="card p-4 flex flex-col min-h-[280px] lg:min-h-0 lg:col-span-5">
           <div className="text-[11px] font-semibold uppercase tracking-wider">CLE · 어학 6개 지표</div>
           <div className="muted text-[10px]">독해/작문/청해/회화/문법/어휘</div>
-          <div className="flex-1 min-h-0"><Radar current={cle} theme={radarTheme} /></div>
+          <div className="h-[220px] lg:h-auto lg:flex-1 lg:min-h-0"><Radar current={cle} theme={radarTheme} /></div>
         </div>
 
-        <div className="col-span-7 card p-4 min-h-0 flex flex-col">
+        <div className="card p-4 flex flex-col min-h-[320px] lg:min-h-0 lg:col-span-7">
           <div className="flex items-center justify-between">
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-wider">반 평균 점수 추이</div>
               <div className="muted text-[10px]">최근 10개월</div>
             </div>
           </div>
-          <div className="flex-1 min-h-0"><MonthlyBars /></div>
+          <div className="h-[180px] lg:h-auto lg:flex-1 lg:min-h-0"><MonthlyBars /></div>
         </div>
-        <div className="col-span-5 card p-4 min-h-0 flex flex-col">
+        <div className="card p-4 flex flex-col min-h-[280px] lg:min-h-0 lg:col-span-5">
           <div className="text-[11px] font-semibold uppercase tracking-wider">수상 · 활동 ({awardsAt(selected, cursor).length})</div>
           <ul className="mt-1 overflow-auto text-sm divide-y divide-[#ececea] flex-1 min-h-0">
             {awardsAt(selected, cursor).map(a => (

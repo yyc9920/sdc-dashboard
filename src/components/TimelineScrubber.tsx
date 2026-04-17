@@ -50,7 +50,7 @@ export default function TimelineScrubber({ variant }: { variant: 'a'|'b'|'c'|'d'
   const knob  = fill;
 
   return (
-    <div className="px-5 py-3 border-t flex items-center gap-4"
+    <div className="px-3 sm:px-5 py-2 sm:py-3 border-t flex items-center gap-2 sm:gap-4 flex-wrap sm:flex-nowrap"
       style={{
         backgroundColor: variant === 'b' ? 'rgba(10,12,18,.6)' : 'rgba(255,255,255,.6)',
         borderColor: variant === 'b' ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.06)',
@@ -73,8 +73,8 @@ export default function TimelineScrubber({ variant }: { variant: 'a'|'b'|'c'|'d'
         </div>
       </div>
 
-      <div className="flex-1 flex items-center gap-3">
-        <div className="text-[11px] opacity-70 font-mono whitespace-nowrap">{s.enrollDate}</div>
+      <div className="flex-1 min-w-0 flex items-center gap-2 sm:gap-3 order-3 sm:order-none w-full sm:w-auto">
+        <div className="text-[11px] opacity-70 font-mono whitespace-nowrap hidden md:block">{s.enrollDate}</div>
         <div className="relative flex-1 h-2 rounded-full" style={{ background: track }}>
           <div className="absolute top-0 left-0 h-full rounded-full" style={{ width: `${pct}%`, background: fill }} />
           <input
@@ -88,7 +88,7 @@ export default function TimelineScrubber({ variant }: { variant: 'a'|'b'|'c'|'d'
           <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-2 border-white shadow"
             style={{ left: `${pct}%`, background: knob }} />
         </div>
-        <div className="text-[11px] opacity-70 font-mono whitespace-nowrap">{TODAY}</div>
+        <div className="text-[11px] opacity-70 font-mono whitespace-nowrap hidden md:block">{TODAY}</div>
       </div>
 
       <div className="flex items-center gap-2">

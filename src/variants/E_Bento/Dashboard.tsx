@@ -19,21 +19,21 @@ export default function Dashboard() {
   const cle = cleAt(selected, cursor);
 
   return (
-    <div className="h-full px-6 py-4 grid grid-cols-12 gap-3 overflow-hidden" style={{ gridTemplateRows: 'auto 1fr' }}>
-      <div className="col-span-12 flex items-end justify-between">
+    <div className="min-h-screen px-3 lg:px-6 py-3 lg:py-4 flex flex-col gap-3 lg:h-full lg:grid lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 lg:col-span-12">
         <div>
           <div className="micro">Variant E · Bento Issue №05 · {cursor}</div>
-          <div className="display text-4xl font-black leading-none mt-1"><em>Six skills.</em> 한 화면의 성장기록.</div>
+          <div className="display text-3xl sm:text-4xl font-black leading-none mt-1"><em>Six skills.</em> 한 화면의 성장기록.</div>
         </div>
-        <div className="text-right">
+        <div className="sm:text-right">
           <div className="micro">COVER</div>
           <div className="display text-xl">{selected.name} · G{selected.grade}</div>
         </div>
       </div>
 
-      <div className="col-span-12 grid grid-cols-12 gap-3 min-h-0" style={{ gridTemplateRows: 'repeat(3, minmax(0, 1fr))' }}>
+      <div className="grid grid-cols-1 gap-3 lg:col-span-12 lg:grid-cols-12 lg:min-h-0 lg:grid-rows-[repeat(3,minmax(0,1fr))]">
         {/* Cover student */}
-        <div className="bento dark col-span-4 row-span-2 flex flex-col justify-between">
+        <div className="bento dark flex flex-col justify-between min-h-[260px] lg:min-h-0 lg:col-span-4 lg:row-span-2">
           <div>
             <div className="micro opacity-60">Cover Student</div>
             <div className="display text-3xl font-black mt-1">{selected.name}</div>
@@ -48,7 +48,7 @@ export default function Dashboard() {
         </div>
 
         {/* Radar */}
-        <div className="bento cream col-span-5 row-span-2 min-h-0 flex flex-col">
+        <div className="bento cream flex flex-col min-h-[280px] lg:min-h-0 lg:col-span-5 lg:row-span-2">
           <div className="flex items-center justify-between">
             <div>
               <div className="micro">Fig. 01 · CLE Hexagon</div>
@@ -56,24 +56,24 @@ export default function Dashboard() {
             </div>
             <div className="text-[10px] opacity-60">독해·작문·청해·회화·문법·어휘</div>
           </div>
-          <div className="flex-1 min-h-0 mt-1"><Radar current={cle} theme={radarTheme} /></div>
+          <div className="h-[220px] lg:h-auto lg:flex-1 lg:min-h-0 mt-1"><Radar current={cle} theme={radarTheme} /></div>
         </div>
 
         {/* Big accent stat */}
-        <div className="bento accent col-span-3 row-span-1 flex flex-col justify-center">
+        <div className="bento accent flex flex-col justify-center min-h-[120px] lg:min-h-0 lg:col-span-3 lg:row-span-1">
           <div className="micro opacity-80">Class Size</div>
           <div className="display text-5xl font-black leading-none">{roster.length}</div>
           <div className="text-xs opacity-80">students · ㄱ→ㅎ</div>
         </div>
 
-        <div className="bento col-span-3 row-span-1 flex flex-col justify-center">
+        <div className="bento flex flex-col justify-center min-h-[120px] lg:min-h-0 lg:col-span-3 lg:row-span-1">
           <div className="micro">Class CLE</div>
           <div className="display text-5xl font-black leading-none">{(roster.reduce((a,s)=>a+cleAvg(cleAt(s,cursor)),0)/roster.length).toFixed(1)}</div>
           <div className="text-xs opacity-70 mt-1">6-skill avg</div>
         </div>
 
         {/* Roster strip */}
-        <div className="bento col-span-6 row-span-1 min-h-0">
+        <div className="bento min-h-[120px] lg:min-h-0 lg:col-span-6 lg:row-span-1">
           <div className="flex items-center justify-between mb-1">
             <div className="micro">Roster · ㄱ→ㅎ</div>
             <div className="text-[10px] opacity-60">{roster.length}명</div>
@@ -90,7 +90,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bento cream col-span-6 row-span-1 flex items-center gap-3">
+        <div className="bento cream flex flex-col sm:flex-row sm:items-center gap-3 min-h-[100px] lg:min-h-0 lg:col-span-6 lg:row-span-1">
           <div className="micro">Field Note</div>
           <div className="flex-1 display text-sm italic leading-snug">
             "학습만 남기고, 데이터로 가르친다." — 초등부 세미나는 입학 시점부터 한 명 한 명의 지표를 축적합니다.

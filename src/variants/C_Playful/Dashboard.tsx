@@ -20,11 +20,11 @@ export default function Dashboard() {
   const cle = cleAt(selected, cursor);
 
   return (
-    <div className="h-full px-6 py-4 grid grid-cols-12 gap-4 overflow-hidden">
-      <div className="col-span-12 flex items-end justify-between">
+    <div className="min-h-screen px-3 lg:px-6 py-3 lg:py-4 flex flex-col gap-3 lg:gap-4 lg:h-full lg:grid lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 lg:col-span-12">
         <div>
           <span className="pill fun inline-block text-base" style={{ background:'#fff3b0' }}>📚 Variant C · 키즈</span>
-          <div className="fun text-4xl font-bold mt-1 leading-tight">우리반 성장 다이어리 ✨ <span className="text-sm opacity-60">{cursor} 기준</span></div>
+          <div className="fun text-3xl sm:text-4xl font-bold mt-1 leading-tight">우리반 성장 다이어리 ✨ <span className="text-sm opacity-60">{cursor} 기준</span></div>
         </div>
         <div className="grid grid-cols-3 gap-2">
           <div className="card px-3 py-2 text-center" style={{ background:'#fff3b0' }}>
@@ -42,9 +42,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <aside className="col-span-3 card p-3 min-h-0 overflow-hidden flex flex-col">
+      <aside className="card p-3 flex flex-col lg:col-span-3 lg:min-h-0 lg:overflow-hidden">
         <div className="fun text-xl font-bold mb-2">친구들 🎒</div>
-        <div className="flex-1 min-h-0 overflow-auto space-y-1.5 pr-1">
+        <div className="max-h-[280px] lg:max-h-none lg:flex-1 lg:min-h-0 overflow-auto space-y-1.5 pr-1">
           {roster.map((s, i) => (
             <button key={s.id} onClick={() => setSelected(s.id)}
               className={`btn-pop w-full text-left px-2.5 py-2 flex items-center gap-2
@@ -61,8 +61,8 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      <section className="col-span-9 grid grid-cols-12 grid-rows-2 gap-4 min-h-0">
-        <div className="col-span-7 card p-4 flex items-center gap-4 min-h-0">
+      <section className="flex flex-col gap-3 lg:col-span-9 lg:grid lg:grid-cols-12 lg:grid-rows-2 lg:gap-4 lg:min-h-0">
+        <div className="card p-4 flex flex-col sm:flex-row items-center gap-4 lg:col-span-7 lg:min-h-0">
           <div className="w-20 h-20 rounded-full grid place-items-center text-3xl border-4 border-[#2d1b3d] shadow-[4px_4px_0_#2d1b3d]"
             style={{ background: avatar(selectedIdx) }}>{selected.name[0]}</div>
           <div className="flex-1">
@@ -80,14 +80,14 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="col-span-5 card p-4 min-h-0 flex flex-col">
+        <div className="card p-4 flex flex-col min-h-[280px] lg:min-h-0 lg:col-span-5">
           <div className="fun text-xl font-bold">✏️ 6가지 실력</div>
-          <div className="flex-1 min-h-0"><Radar current={cle} theme={radarTheme} /></div>
+          <div className="h-[220px] lg:h-auto lg:flex-1 lg:min-h-0"><Radar current={cle} theme={radarTheme} /></div>
         </div>
 
-        <div className="col-span-12 card p-4 min-h-0">
+        <div className="card p-4 min-h-[220px] lg:min-h-0 lg:col-span-12">
           <div className="fun text-xl font-bold mb-2">🌟 친구들 성장 리더보드</div>
-          <div className="grid grid-cols-12 gap-2 h-full">
+          <div className="grid grid-cols-12 gap-2 h-[180px] lg:h-full">
             {roster.slice(0,12).map((s, i) => {
               const pct = (cleAvg(cleAt(s, cursor)) / 100) * 100;
               return (

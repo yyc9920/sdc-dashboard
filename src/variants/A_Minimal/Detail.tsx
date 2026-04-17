@@ -35,20 +35,20 @@ export default function Detail() {
   const awards = awardsAt(s, cursor);
 
   return (
-    <div className="h-full px-6 py-4 grid grid-cols-12 grid-rows-6 gap-4 overflow-hidden">
+    <div className="min-h-screen px-3 lg:px-6 py-3 lg:py-4 flex flex-col gap-3 lg:gap-4 lg:h-full lg:grid lg:grid-cols-12 lg:grid-rows-6 lg:overflow-hidden">
       {/* Header / killer: Ghost Self delta chips */}
-      <div className="col-span-12 row-span-1 card p-4 flex items-center justify-between">
+      <div className="card p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3 lg:col-span-12 lg:row-span-1">
         <div>
           <div className="chip inline-block">KILLER · Ghost Self</div>
-          <div className="flex items-baseline gap-3 mt-0.5">
-            <div className="display text-4xl font-bold">{s.name}</div>
+          <div className="flex items-baseline gap-3 mt-0.5 flex-wrap">
+            <div className="display text-3xl sm:text-4xl font-bold">{s.name}</div>
             <div className="muted text-xs">{s.grade}학년 · {s.enrollDate} 입학</div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="text-[11px] muted mr-1">입학 대비 성장</div>
           {(Object.entries(deltas) as Array<[keyof typeof deltas, number]>).map(([k, v]) => (
-            <div key={k} className="px-2 py-1 rounded-full text-[11px] font-semibold"
+            <div key={k} className="px-2 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap"
               style={{ background: v >= 0 ? '#e7f5ef' : '#fbe9e7', color: v >= 0 ? '#1f7a4f' : '#b23a2b' }}>
               {labelOf(k)} {v >= 0 ? '+' : ''}{v}
             </div>
@@ -57,14 +57,14 @@ export default function Detail() {
       </div>
 
       {/* Radar with ghost overlay */}
-      <div className="col-span-5 row-span-3 card p-4 flex flex-col">
+      <div className="card p-4 flex flex-col min-h-[300px] lg:min-h-0 lg:col-span-5 lg:row-span-3">
         <div className="text-[11px] font-semibold uppercase tracking-wider">CLE · Ghost Overlay</div>
         <div className="muted text-[10px]">점선 = 입학 시점 · 실선 = {cursor.slice(0, 7)}</div>
-        <div className="flex-1 min-h-0"><Radar current={cle} ghost={ghostCle} theme={radarTheme} /></div>
+        <div className="h-[220px] lg:h-auto lg:flex-1 lg:min-h-0"><Radar current={cle} ghost={ghostCle} theme={radarTheme} /></div>
       </div>
 
       {/* Score timeline */}
-      <div className="col-span-7 row-span-3 card p-4 flex flex-col">
+      <div className="card p-4 flex flex-col min-h-[280px] lg:min-h-0 lg:col-span-7 lg:row-span-3">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-wider">교과 성적 추이</div>
@@ -72,11 +72,11 @@ export default function Detail() {
           </div>
           <div className="muted text-[10px]">{tests.length}건 (커서 기준)</div>
         </div>
-        <div className="flex-1 min-h-0"><ScoreLine tests={tests} theme={lineTheme} /></div>
+        <div className="h-[220px] lg:h-auto lg:flex-1 lg:min-h-0"><ScoreLine tests={tests} theme={lineTheme} /></div>
       </div>
 
       {/* TOEFL */}
-      <div className="col-span-5 row-span-2 card p-4 flex flex-col">
+      <div className="card p-4 flex flex-col lg:col-span-5 lg:row-span-2">
         <div className="text-[11px] font-semibold uppercase tracking-wider mb-1">TOEFL (커서 기준)</div>
         <div className="flex items-baseline gap-2">
           <div className="display text-4xl font-bold">{toefl.total}</div>
@@ -93,7 +93,7 @@ export default function Detail() {
       </div>
 
       {/* Attendance + Memo */}
-      <div className="col-span-7 row-span-2 card p-4 flex flex-col">
+      <div className="card p-4 flex flex-col lg:col-span-7 lg:row-span-2">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-wider">출석 · 500문장 암기 (YTD)</div>
@@ -119,7 +119,7 @@ export default function Detail() {
       </div>
 
       {/* Awards strip */}
-      <div className="col-span-12 row-span-1 card p-2 px-4 flex items-center gap-3 overflow-x-auto">
+      <div className="card p-2 px-4 flex items-center gap-3 overflow-x-auto lg:col-span-12 lg:row-span-1">
         <div className="text-[10px] font-semibold uppercase tracking-wider mr-2 whitespace-nowrap">수상 ({awards.length})</div>
         {awards.map(a => (
           <div key={a.title + a.date} className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#f2efe8] text-xs whitespace-nowrap">

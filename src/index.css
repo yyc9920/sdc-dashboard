@@ -2,8 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root { height: 100%; width: 100%; overflow: hidden; }
+html, body, #root { height: 100%; width: 100%; }
+html, body { overflow: hidden; }
 body { font-family: 'Noto Sans KR', 'Inter', system-ui, sans-serif; }
+
+/* Mobile: allow vertical scroll — don't cram 5 panels into 600px */
+@media (max-width: 1023px) {
+  html, body, #root { height: auto; min-height: 100%; overflow: visible; }
+}
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; }
